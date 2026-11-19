@@ -1,12 +1,14 @@
-# Example Caddy config for EuroVPS. Caddy gets HTTPS certificates automatically.
-# Replace the domains, then:  sudo cp deploy/Caddyfile.example /etc/caddy/Caddyfile && sudo systemctl reload caddy
+# Caddy config for saorsa.space (use this one only if the server already runs Caddy).
+# Caddy gets the HTTPS certificate automatically.
+# Add this block to /etc/caddy/Caddyfile, then:  sudo systemctl reload caddy
 
-# Dev site (password-protected while you test)
-dev.saorsa.example {
-	basicauth {
-		# create the hash with:  caddy hash-password
-		simon $2a$14$REPLACE_WITH_HASH
+saorsa.space, www.saorsa.space {
+	# Password protection while Saorsa is being built.
+	# Make the hash with:  caddy hash-password
+	basic_auth {
+		saorsa $2a$14$REPLACE_WITH_HASH
 	}
+
 	root * /srv/saorsa/web
 	encode zstd gzip
 	file_server
@@ -17,11 +19,11 @@ dev.saorsa.example {
 	}
 
 	header {
-		# Saorsa may be framed by nobody; Saorsa itself frames other sites
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Content-Type-Options "nosniff"
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		X-Robots-Tag "noindex, nofollow"
 	}
 	@media path /media/*
 	header @media Cache-Control "public, max-age=2592000"

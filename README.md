@@ -86,10 +86,48 @@ These are the things to check before this goes on the dev server. They're roughl
 9. **Password-protect the dev site.** Keep `dev.` behind basic auth (see the Caddy example) until you're ready.
 10. **Accessibility.** Check keyboard focus order, contrast of the small grey text over the video, and screen-reader labels. Most are in place, but they need a proper pass.
 
-## Deploying to EuroVPS (outline)
+## Deploying to saorsa.space (EuroVPS)
 
-1. On the server, clone the repo to `/srv/saorsa`.
-2. Copy `deploy/Caddyfile.example` to `/etc/caddy/Caddyfile`, set your domain and the password hash, then reload Caddy.
-3. (Later) download PocketBase, point it at `pocketbase/pb_migrations`, and run it as a service on port 8090.
-4. Add the nightly checker to cron: `15 3 * * * cd /srv/saorsa && python3 tools/check_embeds.py --site-origin https://your-domain`
-5. To deploy an update: `git pull` on the server. There's no build step.
+The site is one folder of files (`web/`), so it sits alongside your other projects without touching them. While it's being built, the whole site is behind a username and password.
+
+**1. Find out which web server your other projects use.** On the server, run:
+```bash
+sudo ss -ltnp | grep -E ':80 |:443 '
+```
+The program named on those lines (`nginx`, `apache2` / `httpd`, or `caddy`) is the one to use. Use the matching file in `deploy/`. Don't install a second web server: only one can use ports 80 and 443. If you manage sites through **cPanel, Plesk or DirectAdmin**, skip to "Using a control panel" below.
+
+**2. Put the code on the server.**
+```bash
+sudo mkdir -p /srv/saorsa && sudo chown $USER /srv/saorsa
+git clone https://github.com/simonhannabuss/saorsa /srv/saorsa
+cd /srv/saorsa && git checkout phase-7-front-end
+```
+(The repo is private, so GitHub asks you to sign in. Use a personal access token or a deploy key.)
+
+**3. Add the site and the password.** Follow the steps at the top of your server's file:
+- `deploy/nginx-saorsa.space.conf`: nginx + `htpasswd`
+- `deploy/apache-saorsa.space.conf`: Apache + `htpasswd`
+- `deploy/Caddyfile.example`: Caddy + `caddy hash-password`
+
+**4. DNS.** `saorsa.space` and `www.saorsa.space` need A records pointing at the server's IP address. Set these at your registrar or at EuroVPS.
+
+**5. HTTPS.** Run `certbot` for nginx or Apache, as shown in the file. Caddy sets up HTTPS on its own.
+
+**6. Nightly link checker.** Run `crontab -e` and add:
+```
+15 3 * * * cd /srv/saorsa && python3 tools/check_embeds.py --site-origin https://saorsa.space
+```
+
+**Updating the site later:**
+```bash
+cd /srv/saorsa && git pull
+```
+There's no build step.
+
+**Using a control panel (cPanel / Plesk / DirectAdmin):**
+1. Add `saorsa.space` as a domain.
+2. Upload the contents of `web/` to its document root, or clone the repo and point the document root at `web/`.
+3. Turn on the panel's **Password protect directories** (cPanel: *Directory Privacy*) for the document root.
+4. Turn on the free Let's Encrypt certificate.
+
+**Before launch:** remove the password, `X-Robots-Tag "noindex"` and `web/robots.txt`, so search engines can find the site.
