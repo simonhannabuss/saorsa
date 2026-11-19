@@ -1,0 +1,7 @@
+---
+# cPanel "Git Version Control" deploy: copies the site into public_html.
+# In cPanel: Git Version Control > Manage > Pull or Deploy > Deploy HEAD Commit.
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html/
+    - /bin/cp -R web/. $DEPLOYPATH
