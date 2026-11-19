@@ -47,8 +47,8 @@ Useful while testing:
 
 ## Updating the list of sites
 
-1. In the review Sheet, export **Review queue** and **Already on Saorsa** as CSV.
-2. Save them over `data/review-queue.csv` and `data/already-on-saorsa.csv`.
+1. In the review Sheet, export the **Review queue** tab as CSV.
+2. Save it over `data/review-queue.csv`.
 3. Run `python3 tools/sheet_to_json.py`.
 
 Rows set to **Approved** become live. **Pending** and **Needs info** rows go to `preview.json`. **Rejected** rows are dropped.
@@ -76,7 +76,7 @@ Once PocketBase is running, set `POCKETBASE_URL` in `js/config.js` and the site 
 These are the things to check before this goes on the dev server. They're roughly in order of importance.
 
 1. **Many sites refuse to be shown in a frame.** Publishers use `X-Frame-Options` or CSP `frame-ancestors` to block it, and it's the biggest risk for Saorsa. A browser can't detect it reliably, so run `tools/check_embeds.py` on the server every night. Sites it marks `embeddable: false` show the "can't be shown" card with *Open in new tab*. Run it once before launch to see how many of your sites are affected.
-2. **Perspective and topics for the 16 live sites are blank.** Only the review-queue candidates have them so far. Fill them in (Sheet, then CSV, then `sheet_to_json.py`), otherwise the live sites only appear under **All**.
+2. **A few live sites have no perspective or topic yet** (for example The Corbett Report has no country). They still appear under **All**; fill the gaps in the Sheet when you can.
 3. **Preview data is public if this repo is public.** `web/data/preview.json` holds the review-queue suggestions, with perspective labels on named outlets. Keep the repo **private**, or remove `preview.json` before making it public. In production, preview is off unless the host is `localhost` or `dev.*`.
 4. **The background video is a 5-second test clip.** Replace `web/media/bg-loop.mp4` and `bg-poster.jpg` with the final seamless loop: 1280 × 720 H.264, no audio, under about 2 MB. Also check the Freeject image's licence, since the video started from it.
 5. **Fonts are loaded from Google Fonts.** Self-host Raleway, Quicksand and IBM Plex Mono before launch. Loading them from Google sends visitors' IP addresses to Google, which is a GDPR issue for EU and UK visitors.

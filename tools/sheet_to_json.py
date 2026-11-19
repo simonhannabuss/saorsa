@@ -5,12 +5,10 @@ Usage:
     python3 tools/sheet_to_json.py
 
 Reads:
-    data/already-on-saorsa.csv   (tab "Already on Saorsa": Domain, Category, Notes)
     data/review-queue.csv        (tab "Review queue", exported as CSV)
 
 Writes:
-    web/data/sources.json  - live sites: everything in "Already on Saorsa"
-                             plus every Review queue row set to Approved
+    web/data/sources.json  - live sites: every Review queue row set to Approved
     web/data/preview.json  - Pending / Needs info rows, only shown when the
                              "preview" switch is on (dev only, never in production)
 
@@ -81,26 +79,6 @@ def row_to_source(row, status):
 
 def main():
     live, preview, seen = [], [], set()
-
-    with open(DATA / "already-on-saorsa.csv", newline="", encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            d = domain_of(row["Domain"])
-            if not d or d in seen:
-                continue
-            seen.add(d)
-            live.append({
-                "id": d,
-                "name": d,
-                "url": f"https://{d}",
-                "domain": d,
-                "country": None,
-                "category": CATEGORY.get((row.get("Category") or "").strip().lower(), "geo"),
-                "perspective": None,  # still to be set by Simon
-                "topics": [],
-                "status": "live",
-                "embeddable": None,
-                "note": clean(row.get("Notes")),
-            })
 
     with open(DATA / "review-queue.csv", newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):

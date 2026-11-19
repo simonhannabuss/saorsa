@@ -1,210 +1,1757 @@
 [
  {
   "id": "21stcenturywire.com",
-  "name": "21stcenturywire.com",
+  "name": "21st Century Wire",
   "url": "https://21stcenturywire.com",
   "domain": "21stcenturywire.com",
-  "country": null,
+  "country": "US",
   "category": "geo",
-  "perspective": null,
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
   "id": "activistpost.com",
-  "name": "activistpost.com",
-  "url": "https://activistpost.com",
+  "name": "Activist Post",
+  "url": "https://www.activistpost.com",
   "domain": "activistpost.com",
-  "country": null,
+  "country": "US",
   "category": "geo",
-  "perspective": null,
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": "Reported as acquired by MACRO Productions in 2025: re-check independence"
+  "embeddable": null
  },
  {
   "id": "americanthinker.com",
-  "name": "americanthinker.com",
-  "url": "https://americanthinker.com",
+  "name": "American Thinker",
+  "url": "https://www.americanthinker.com",
   "domain": "americanthinker.com",
-  "country": null,
+  "country": "US",
   "category": "geo",
-  "perspective": null,
+  "perspective": "right",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "awarenessact.com",
-  "name": "awarenessact.com",
-  "url": "https://awarenessact.com",
-  "domain": "awarenessact.com",
-  "country": null,
-  "category": "geo",
+  "id": "anomalist.com",
+  "name": "The Anomalist",
+  "url": "https://www.anomalist.com",
+  "domain": "anomalist.com",
+  "country": "US",
+  "category": "exo",
   "perspective": null,
+  "topics": [
+   "sightings"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "anr.news",
+  "name": "Australian National Review",
+  "url": "https://anr.news",
+  "domain": "anr.news",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
+ },
+ {
+  "id": "asenseofplacemagazine.substack.com",
+  "name": "A Sense of Place Magazine",
+  "url": "https://asenseofplacemagazine.substack.com",
+  "domain": "asenseofplacemagazine.substack.com",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "asiapacificreport.nz",
+  "name": "Asia Pacific Report",
+  "url": "https://asiapacificreport.nz",
+  "domain": "asiapacificreport.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "astronomynow.com",
+  "name": "Astronomy Now",
+  "url": "https://astronomynow.com",
+  "domain": "astronomynow.com",
+  "country": "UK",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "space"
+  ],
+  "status": "live",
+  "embeddable": null
  },
  {
   "id": "bellacaledonia.org.uk",
-  "name": "bellacaledonia.org.uk",
+  "name": "Bella Caledonia",
   "url": "https://bellacaledonia.org.uk",
   "domain": "bellacaledonia.org.uk",
-  "country": null,
+  "country": "UK",
   "category": "geo",
-  "perspective": null,
+  "perspective": "left",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "blacklistednews.com",
-  "name": "blacklistednews.com",
-  "url": "https://blacklistednews.com",
-  "domain": "blacklistednews.com",
-  "country": null,
-  "category": "geo",
+  "id": "betterdwelling.com",
+  "name": "Better Dwelling",
+  "url": "https://betterdwelling.com",
+  "domain": "betterdwelling.com",
+  "country": "CA",
+  "category": "money",
   "perspective": null,
+  "topics": [
+   "economy"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "blog.maryannedemasi.com",
+  "name": "Maryanne Demasi Reports",
+  "url": "https://blog.maryannedemasi.com",
+  "domain": "blog.maryannedemasi.com",
+  "country": "AU",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "sceptic"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "broadview.org",
+  "name": "Broadview",
+  "url": "https://www.broadview.org",
+  "domain": "broadview.org",
+  "country": "CA",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "brownstone.org",
+  "name": "Brownstone Institute",
+  "url": "https://brownstone.org",
+  "domain": "brownstone.org",
+  "country": "US",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "sceptic"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "bufora.org.uk",
+  "name": "BUFORA",
+  "url": "https://www.bufora.org.uk",
+  "domain": "bufora.org.uk",
+  "country": "UK",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "sightings"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "bylinetimes.com",
+  "name": "Byline Times",
+  "url": "https://bylinetimes.com",
+  "domain": "bylinetimes.com",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "centre",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
+ },
+ {
+  "id": "c2cjournal.ca",
+  "name": "C2C Journal",
+  "url": "https://c2cjournal.ca",
+  "domain": "c2cjournal.ca",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "caitlinjohnstone.com.au",
+  "name": "Caitlin Johnstone",
+  "url": "https://caitlinjohnstone.com.au/",
+  "domain": "caitlinjohnstone.com.au",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "canadianaffairs.news",
+  "name": "Canadian Affairs",
+  "url": "https://canadianaffairs.news",
+  "domain": "canadianaffairs.news",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "canadiandimension.com",
+  "name": "Canadian Dimension",
+  "url": "https://canadiandimension.com",
+  "domain": "canadiandimension.com",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "capx.co",
+  "name": "CapX",
+  "url": "https://capx.co",
+  "domain": "capx.co",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "carbonbrief.org",
+  "name": "Carbon Brief",
+  "url": "https://www.carbonbrief.org",
+  "domain": "carbonbrief.org",
+  "country": "UK",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "nature"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "centauri-dreams.org",
+  "name": "Centauri Dreams",
+  "url": "https://www.centauri-dreams.org",
+  "domain": "centauri-dreams.org",
+  "country": "US",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "space"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "centrist.nz",
+  "name": "The Centrist",
+  "url": "https://centrist.nz",
+  "domain": "centrist.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "childrenshealthdefense.org",
+  "name": "The Defender (Children's Health Defense)",
+  "url": "https://childrenshealthdefense.org/defender",
+  "domain": "childrenshealthdefense.org",
+  "country": "US",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "sceptic",
+   "natural"
+  ],
+  "status": "live",
+  "embeddable": null
  },
  {
   "id": "collective-evolution.com",
-  "name": "collective-evolution.com",
-  "url": "https://collective-evolution.com",
+  "name": "Collective Evolution",
+  "url": "https://www.collective-evolution.com",
   "domain": "collective-evolution.com",
-  "country": null,
-  "category": "spiritual",
-  "perspective": null,
+  "country": "CA",
+  "category": "geo",
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": "Its successor may be thepulse.one (see Review queue)"
+  "embeddable": null
+ },
+ {
+  "id": "commondreams.org",
+  "name": "Common Dreams",
+  "url": "https://www.commondreams.org",
+  "domain": "commondreams.org",
+  "country": "US",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
  },
  {
   "id": "corbettreport.com",
-  "name": "corbettreport.com",
-  "url": "https://corbettreport.com",
+  "name": "The Corbett Report",
+  "url": "https://www.corbettreport.com",
   "domain": "corbettreport.com",
   "country": null,
   "category": "geo",
-  "perspective": null,
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
+ },
+ {
+  "id": "crikey.com.au",
+  "name": "Crikey",
+  "url": "https://www.crikey.com.au",
+  "domain": "crikey.com.au",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "croakey.org",
+  "name": "Croakey Health Media",
+  "url": "https://www.croakey.org",
+  "domain": "croakey.org",
+  "country": "AU",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "evidence"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "croakingcassandra.com",
+  "name": "Croaking Cassandra",
+  "url": "https://croakingcassandra.com",
+  "domain": "croakingcassandra.com",
+  "country": "NZ",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "economy"
+  ],
+  "status": "live",
+  "embeddable": null
  },
  {
   "id": "dailycaller.com",
-  "name": "dailycaller.com",
+  "name": "The Daily Caller",
   "url": "https://dailycaller.com",
   "domain": "dailycaller.com",
-  "country": null,
+  "country": "US",
   "category": "geo",
-  "perspective": null,
+  "perspective": "right",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "davidicke.com",
-  "name": "davidicke.com",
-  "url": "https://davidicke.com",
-  "domain": "davidicke.com",
-  "country": null,
-  "category": "geo",
+  "id": "dailygrail.com",
+  "name": "The Daily Grail",
+  "url": "https://www.dailygrail.com",
+  "domain": "dailygrail.com",
+  "country": "AU",
+  "category": "exo",
   "perspective": null,
+  "topics": [
+   "sightings",
+   "ancient"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "dailysceptic.org",
+  "name": "The Daily Sceptic",
+  "url": "https://dailysceptic.org",
+  "domain": "dailysceptic.org",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
+ },
+ {
+  "id": "declassifieduk.org",
+  "name": "Declassified UK",
+  "url": "https://www.declassifieduk.org",
+  "domain": "declassifieduk.org",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "democracyproject.org.nz",
+  "name": "Democracy Project",
+  "url": "https://www.democracyproject.org.nz",
+  "domain": "democracyproject.org.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "doubledown.news",
+  "name": "Double Down News",
+  "url": "https://www.doubledown.news",
+  "domain": "doubledown.news",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "dropsitenews.com",
+  "name": "Drop Site News",
+  "url": "https://www.dropsitenews.com",
+  "domain": "dropsitenews.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "druthers.ca",
+  "name": "Druthers",
+  "url": "https://druthers.ca",
+  "domain": "druthers.ca",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "dublininquirer.com",
+  "name": "Dublin Inquirer",
+  "url": "https://www.dublininquirer.com",
+  "domain": "dublininquirer.com",
+  "country": "IE",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "eurekastreet.com.au",
+  "name": "Eureka Street",
+  "url": "https://www.eurekastreet.com.au",
+  "domain": "eurekastreet.com.au",
+  "country": "AU",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
  },
  {
   "id": "evolvepolitics.com",
-  "name": "evolvepolitics.com",
+  "name": "Evolve Politics",
   "url": "https://evolvepolitics.com",
   "domain": "evolvepolitics.com",
-  "country": null,
+  "country": "UK",
   "category": "geo",
-  "perspective": null,
+  "perspective": "left",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "fulcrumnews.com",
-  "name": "fulcrumnews.com",
-  "url": "https://fulcrumnews.com",
-  "domain": "fulcrumnews.com",
-  "country": null,
+  "id": "expose-news.com",
+  "name": "The Exposé",
+  "url": "https://expose-news.com",
+  "domain": "expose-news.com",
+  "country": "UK",
   "category": "geo",
-  "perspective": null,
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "geopolitics.co",
-  "name": "geopolitics.co",
-  "url": "https://geopolitics.co",
-  "domain": "geopolitics.co",
-  "country": null,
+  "id": "freebeacon.com",
+  "name": "Washington Free Beacon",
+  "url": "https://freebeacon.com",
+  "domain": "freebeacon.com",
+  "country": "US",
   "category": "geo",
-  "perspective": null,
+  "perspective": "right",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
   "id": "globalresearch.ca",
-  "name": "globalresearch.ca",
-  "url": "https://globalresearch.ca",
+  "name": "Global Research",
+  "url": "https://www.globalresearch.ca",
   "domain": "globalresearch.ca",
-  "country": null,
+  "country": "CA",
   "category": "geo",
-  "perspective": null,
+  "perspective": "hidden",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "guardianlv.com",
-  "name": "guardianlv.com",
-  "url": "https://guardianlv.com",
-  "domain": "guardianlv.com",
-  "country": null,
+  "id": "greenleft.org.au",
+  "name": "Green Left",
+  "url": "https://www.greenleft.org.au",
+  "domain": "greenleft.org.au",
+  "country": "AU",
   "category": "geo",
-  "perspective": null,
+  "perspective": "left",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
  },
  {
-  "id": "infowars.com",
-  "name": "infowars.com",
-  "url": "https://infowars.com",
-  "domain": "infowars.com",
-  "country": null,
+  "id": "gript.ie",
+  "name": "Gript",
+  "url": "https://gript.ie",
+  "domain": "gript.ie",
+  "country": "IE",
   "category": "geo",
-  "perspective": null,
+  "perspective": "right",
   "topics": [],
   "status": "live",
-  "embeddable": null,
-  "note": null
+  "embeddable": null
+ },
+ {
+  "id": "hartgroup.org",
+  "name": "HART",
+  "url": "https://www.hartgroup.org",
+  "domain": "hartgroup.org",
+  "country": "UK",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "sceptic"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "healthydebate.ca",
+  "name": "Healthy Debate",
+  "url": "https://healthydebate.ca",
+  "domain": "healthydebate.ca",
+  "country": "CA",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "evidence"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "independentaustralia.net",
+  "name": "Independent Australia",
+  "url": "https://independentaustralia.net",
+  "domain": "independentaustralia.net",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "insidestory.org.au",
+  "name": "Inside Story",
+  "url": "https://insidestory.org.au",
+  "domain": "insidestory.org.au",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "interest.co.nz",
+  "name": "interest.co.nz",
+  "url": "https://www.interest.co.nz",
+  "domain": "interest.co.nz",
+  "country": "NZ",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "economy"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "irishcatholic.com",
+  "name": "The Irish Catholic",
+  "url": "https://www.irishcatholic.com",
+  "domain": "irishcatholic.com",
+  "country": "IE",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "johnmenadue.com",
+  "name": "Pearls and Irritations",
+  "url": "https://johnmenadue.com",
+  "domain": "johnmenadue.com",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "kiwiblog.co.nz",
+  "name": "Kiwiblog",
+  "url": "https://www.kiwiblog.co.nz",
+  "domain": "kiwiblog.co.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "lawfaremedia.org",
+  "name": "Lawfare",
+  "url": "https://www.lawfaremedia.org",
+  "domain": "lawfaremedia.org",
+  "country": "US",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "leftfield.org.uk",
+  "name": "Left Field",
+  "url": "https://leftfield.org.uk/",
+  "domain": "leftfield.org.uk",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "leftfootforward.org",
+  "name": "Left Foot Forward",
+  "url": "https://leftfootforward.org",
+  "domain": "leftfootforward.org",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "lewrockwell.com",
+  "name": "LewRockwell.com",
+  "url": "https://www.lewrockwell.com",
+  "domain": "lewrockwell.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "liberationtimes.com",
+  "name": "Liberation Times",
+  "url": "https://www.liberationtimes.com",
+  "domain": "liberationtimes.com",
+  "country": "UK",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "disclosure"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "lowyinstitute.org",
+  "name": "The Interpreter (Lowy Institute)",
+  "url": "https://www.lowyinstitute.org/the-interpreter",
+  "domain": "lowyinstitute.org",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "macrobusiness.com.au",
+  "name": "MacroBusiness",
+  "url": "https://www.macrobusiness.com.au",
+  "domain": "macrobusiness.com.au",
+  "country": "AU",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "economy",
+   "markets"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "medicalindependent.ie",
+  "name": "Medical Independent",
+  "url": "https://www.medicalindependent.ie",
+  "domain": "medicalindependent.ie",
+  "country": "IE",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "evidence"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "medicalrepublic.com.au",
+  "name": "The Medical Republic",
+  "url": "https://www.medicalrepublic.com.au",
+  "domain": "medicalrepublic.com.au",
+  "country": "AU",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "evidence"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "michaelwest.com.au",
+  "name": "Michael West Media",
+  "url": "https://michaelwest.com.au",
+  "domain": "michaelwest.com.au",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "mintpressnews.com",
+  "name": "MintPress News",
+  "url": "https://www.mintpressnews.com",
+  "domain": "mintpressnews.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "monevator.com",
+  "name": "Monevator",
+  "url": "https://monevator.com",
+  "domain": "monevator.com",
+  "country": "UK",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "markets"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "morningstaronline.co.uk",
+  "name": "Morning Star",
+  "url": "https://morningstaronline.co.uk",
+  "domain": "morningstaronline.co.uk",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "myownadvisor.ca",
+  "name": "My Own Advisor",
+  "url": "https://www.myownadvisor.ca",
+  "domain": "myownadvisor.ca",
+  "country": "CA",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "markets"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "nakedcapitalism.com",
+  "name": "Naked Capitalism",
+  "url": "https://www.nakedcapitalism.com",
+  "domain": "nakedcapitalism.com",
+  "country": "US",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "power",
+   "economy"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "newmatilda.com",
+  "name": "New Matilda",
+  "url": "https://newmatilda.com",
+  "domain": "newmatilda.com",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "newsroom.co.nz",
+  "name": "Newsroom",
+  "url": "https://newsroom.co.nz",
+  "domain": "newsroom.co.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "novaramedia.com",
+  "name": "Novara Media",
+  "url": "https://novaramedia.com",
+  "domain": "novaramedia.com",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "nzdsos.com",
+  "name": "NZ Doctors Speaking Out with Science",
+  "url": "https://nzdsos.com",
+  "domain": "nzdsos.com",
+  "country": "NZ",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "sceptic"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "off-guardian.org",
+  "name": "OffGuardian",
+  "url": "https://off-guardian.org",
+  "domain": "off-guardian.org",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "ontheditch.com",
+  "name": "The Ditch",
+  "url": "https://www.ontheditch.com",
+  "domain": "ontheditch.com",
+  "country": "IE",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "opendemocracy.net",
+  "name": "openDemocracy",
+  "url": "https://www.opendemocracy.net",
+  "domain": "opendemocracy.net",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "order-order.com",
+  "name": "Guido Fawkes",
+  "url": "https://order-order.com",
+  "domain": "order-order.com",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "particle.scitech.org.au",
+  "name": "Particle",
+  "url": "https://particle.scitech.org.au",
+  "domain": "particle.scitech.org.au",
+  "country": "AU",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "nature"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "pillarcatholic.com",
+  "name": "The Pillar",
+  "url": "https://www.pillarcatholic.com",
+  "domain": "pillarcatholic.com",
+  "country": "US",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "plough.com",
+  "name": "Plough",
+  "url": "https://www.plough.com",
+  "domain": "plough.com",
+  "country": "US",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "popular.info",
+  "name": "Popular Information",
+  "url": "https://popular.info",
+  "domain": "popular.info",
+  "country": "US",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "pressprogress.ca",
+  "name": "PressProgress",
+  "url": "https://pressprogress.ca",
+  "domain": "pressprogress.ca",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "prospect.org",
+  "name": "The American Prospect",
+  "url": "https://prospect.org",
+  "domain": "prospect.org",
+  "country": "US",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "prospectmagazine.co.uk",
+  "name": "Prospect",
+  "url": "https://www.prospectmagazine.co.uk",
+  "domain": "prospectmagazine.co.uk",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "quadrant.org.au",
+  "name": "Quadrant",
+  "url": "https://quadrant.org.au",
+  "domain": "quadrant.org.au",
+  "country": "AU",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "quantamagazine.org",
+  "name": "Quanta Magazine",
+  "url": "https://www.quantamagazine.org",
+  "domain": "quantamagazine.org",
+  "country": "US",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "nature",
+   "space"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "readtangle.com",
+  "name": "Tangle",
+  "url": "https://www.readtangle.com",
+  "domain": "readtangle.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "readthemaple.com",
+  "name": "The Maple",
+  "url": "https://www.readthemaple.com",
+  "domain": "readthemaple.com",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "rebelnews.com",
+  "name": "Rebel News",
+  "url": "https://www.rebelnews.com",
+  "domain": "rebelnews.com",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "responsiblestatecraft.org",
+  "name": "Responsible Statecraft",
+  "url": "https://responsiblestatecraft.org",
+  "domain": "responsiblestatecraft.org",
+  "country": "US",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "retractionwatch.com",
+  "name": "Retraction Watch",
+  "url": "https://retractionwatch.com",
+  "domain": "retractionwatch.com",
+  "country": "US",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "tech"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "sensible-med.com",
+  "name": "Sensible Medicine",
+  "url": "https://www.sensible-med.com",
+  "domain": "sensible-med.com",
+  "country": "US",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "evidence"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "siliconrepublic.com",
+  "name": "Silicon Republic",
+  "url": "https://www.siliconrepublic.com",
+  "domain": "siliconrepublic.com",
+  "country": "IE",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "tech"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "skeptic.org.uk",
+  "name": "The Skeptic",
+  "url": "https://www.skeptic.org.uk",
+  "domain": "skeptic.org.uk",
+  "country": "UK",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "fringe"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "skwawkbox.org",
+  "name": "The Skwawkbox",
+  "url": "https://skwawkbox.org",
+  "domain": "skwawkbox.org",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "sluggerotoole.com",
+  "name": "Slugger O'Toole",
+  "url": "https://www.sluggerotoole.com",
+  "domain": "sluggerotoole.com",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "sott.net",
+  "name": "Signs of the Times (SOTT)",
+  "url": "https://www.sott.net",
+  "domain": "sott.net",
+  "country": "US",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "spiked-online.com",
+  "name": "spiked",
+  "url": "https://www.spiked-online.com",
+  "domain": "spiked-online.com",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "strongmoneyaustralia.com",
+  "name": "Strong Money Australia",
+  "url": "https://strongmoneyaustralia.com",
+  "domain": "strongmoneyaustralia.com",
+  "country": "AU",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "markets"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "superstitioustimes.com",
+  "name": "The Superstitious Times",
+  "url": "https://superstitioustimes.com",
+  "domain": "superstitioustimes.com",
+  "country": "CA",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "sightings"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "taxresearch.org.uk",
+  "name": "Funding the Future (Richard Murphy)",
+  "url": "https://www.taxresearch.org.uk/Blog",
+  "domain": "taxresearch.org.uk",
+  "country": "UK",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "economy",
+   "power"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "theamericanconservative.com",
+  "name": "The American Conservative",
+  "url": "https://www.theamericanconservative.com",
+  "domain": "theamericanconservative.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "theblackvault.com",
+  "name": "The Black Vault",
+  "url": "https://www.theblackvault.com",
+  "domain": "theblackvault.com",
+  "country": "US",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "disclosure"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thecanary.co",
+  "name": "The Canary",
+  "url": "https://www.thecanary.co",
+  "domain": "thecanary.co",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thecatholicherald.com",
+  "name": "The Catholic Herald",
+  "url": "https://thecatholicherald.com",
+  "domain": "thecatholicherald.com",
+  "country": "UK",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thecipherbrief.com",
+  "name": "The Cipher Brief",
+  "url": "https://www.thecipherbrief.com",
+  "domain": "thecipherbrief.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thecountersignal.com",
+  "name": "The Counter Signal",
+  "url": "https://thecountersignal.com",
+  "domain": "thecountersignal.com",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thecritic.co.uk",
+  "name": "The Critic",
+  "url": "https://thecritic.co.uk",
+  "domain": "thecritic.co.uk",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thedailyblog.co.nz",
+  "name": "The Daily Blog",
+  "url": "https://thedailyblog.co.nz",
+  "domain": "thedailyblog.co.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thedebrief.org",
+  "name": "The Debrief",
+  "url": "https://thedebrief.org",
+  "domain": "thedebrief.org",
+  "country": "US",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "disclosure"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thedispatch.com",
+  "name": "The Dispatch",
+  "url": "https://thedispatch.com",
+  "domain": "thedispatch.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thefederalist.com",
+  "name": "The Federalist",
+  "url": "https://thefederalist.com",
+  "domain": "thefederalist.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thegatewaypundit.com",
+  "name": "The Gateway Pundit",
+  "url": "https://www.thegatewaypundit.com",
+  "domain": "thegatewaypundit.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thehub.ca",
+  "name": "The Hub",
+  "url": "https://thehub.ca",
+  "domain": "thehub.ca",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thejournal.ie",
+  "name": "TheJournal.ie",
+  "url": "https://www.thejournal.ie",
+  "domain": "thejournal.ie",
+  "country": "IE",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thekaka.substack.com",
+  "name": "The Kākā by Bernard Hickey",
+  "url": "https://thekaka.substack.com",
+  "domain": "thekaka.substack.com",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thelondoneconomic.com",
+  "name": "The London Economic",
+  "url": "https://www.thelondoneconomic.com",
+  "domain": "thelondoneconomic.com",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "theozfiles.blogspot.com",
+  "name": "The Oz Files (Bill Chalker)",
+  "url": "https://theozfiles.blogspot.com",
+  "domain": "theozfiles.blogspot.com",
+  "country": "AU",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "sightings"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thepulse.one",
+  "name": "The Pulse",
+  "url": "https://www.thepulse.one",
+  "domain": "thepulse.one",
+  "country": "CA",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "new-age"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thespinoff.co.nz",
+  "name": "The Spinoff",
+  "url": "https://thespinoff.co.nz",
+  "domain": "thespinoff.co.nz",
+  "country": "NZ",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thetablet.co.uk",
+  "name": "The Tablet",
+  "url": "https://www.thetablet.co.uk",
+  "domain": "thetablet.co.uk",
+  "country": "UK",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thetyee.ca",
+  "name": "The Tyee",
+  "url": "https://thetyee.ca",
+  "domain": "thetyee.ca",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "theufochronicles.com",
+  "name": "The UFO Chronicles",
+  "url": "https://www.theufochronicles.com",
+  "domain": "theufochronicles.com",
+  "country": "US",
+  "category": "exo",
+  "perspective": null,
+  "topics": [
+   "sightings"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "thinkinganglicans.org.uk",
+  "name": "Thinking Anglicans",
+  "url": "https://www.thinkinganglicans.org.uk",
+  "domain": "thinkinganglicans.org.uk",
+  "country": "UK",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "faith"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "tricycle.org",
+  "name": "Tricycle: The Buddhist Review",
+  "url": "https://tricycle.org",
+  "domain": "tricycle.org",
+  "country": "US",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "eastern"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "truenorthcanada.com",
+  "name": "True North",
+  "url": "https://truenorthcanada.com/",
+  "domain": "truenorthcanada.com",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "truthout.org",
+  "name": "Truthout",
+  "url": "https://truthout.org",
+  "domain": "truthout.org",
+  "country": "US",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "ukcolumn.org",
+  "name": "UK Column",
+  "url": "https://www.ukcolumn.org",
+  "domain": "ukcolumn.org",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "unitynewsnetwork.co.uk",
+  "name": "Unity News Network",
+  "url": "https://unitynewsnetwork.co.uk",
+  "domain": "unitynewsnetwork.co.uk",
+  "country": "UK",
+  "category": "geo",
+  "perspective": "hidden",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "universetoday.com",
+  "name": "Universe Today",
+  "url": "https://www.universetoday.com",
+  "domain": "universetoday.com",
+  "country": "CA",
+  "category": "science",
+  "perspective": null,
+  "topics": [
+   "space"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "villagemagazine.ie",
+  "name": "Village Magazine",
+  "url": "https://villagemagazine.ie",
+  "domain": "villagemagazine.ie",
+  "country": "IE",
+  "category": "geo",
+  "perspective": "left",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "wakingtimes.com",
+  "name": "Waking Times",
+  "url": "https://www.wakingtimes.com",
+  "domain": "wakingtimes.com",
+  "country": "US",
+  "category": "spiritual",
+  "perspective": null,
+  "topics": [
+   "new-age"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "warontherocks.com",
+  "name": "War on the Rocks",
+  "url": "https://warontherocks.com",
+  "domain": "warontherocks.com",
+  "country": "US",
+  "category": "geo",
+  "perspective": "centre",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "wddty.com",
+  "name": "What Doctors Don't Tell You",
+  "url": "https://www.wddty.com",
+  "domain": "wddty.com",
+  "country": "UK",
+  "category": "health",
+  "perspective": null,
+  "topics": [
+   "natural",
+   "sceptic"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "westernstandard.news",
+  "name": "Western Standard",
+  "url": "https://www.westernstandard.news",
+  "domain": "westernstandard.news",
+  "country": "CA",
+  "category": "geo",
+  "perspective": "right",
+  "topics": [],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "wolfstreet.com",
+  "name": "Wolf Street",
+  "url": "https://wolfstreet.com",
+  "domain": "wolfstreet.com",
+  "country": "US",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "markets",
+   "economy"
+  ],
+  "status": "live",
+  "embeddable": null
+ },
+ {
+  "id": "zerohedge.com",
+  "name": "Zero Hedge",
+  "url": "https://www.zerohedge.com",
+  "domain": "zerohedge.com",
+  "country": "US",
+  "category": "money",
+  "perspective": null,
+  "topics": [
+   "markets",
+   "power"
+  ],
+  "status": "live",
+  "embeddable": null
  }
 ]
