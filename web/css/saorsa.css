@@ -64,6 +64,25 @@ svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width:
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+/* ---------- Scrollbars ----------
+   Slim and quiet, in keeping with the column: a 6px rounded thumb with no
+   track or arrows. It is faint until you hover the area, then brightens.
+   Chrome / Safari / Edge use the ::-webkit-scrollbar rules; Firefox the
+   standard properties (Chrome ignores the -webkit rules if those are set). */
+.side ::-webkit-scrollbar, .panel ::-webkit-scrollbar, .rail::-webkit-scrollbar { width: 10px; height: 10px; }
+.side ::-webkit-scrollbar-track, .panel ::-webkit-scrollbar-track { background: transparent; }
+.side ::-webkit-scrollbar-thumb, .panel ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.08) padding-box; border: 3px solid transparent; border-radius: 10px; min-height: 40px; }
+.side :hover::-webkit-scrollbar-thumb, .panel :hover::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,.2); }
+.side ::-webkit-scrollbar-thumb:hover, .panel ::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,.34); }
+.side ::-webkit-scrollbar-thumb:active, .panel ::-webkit-scrollbar-thumb:active { background-color: rgba(80,191,227,.6); }
+.side ::-webkit-scrollbar-corner, .panel ::-webkit-scrollbar-corner { background: transparent; }
+.rail::-webkit-scrollbar { display: none; }
+@supports (-moz-appearance: none) {
+  .side *, .panel * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+  .side *:hover, .panel *:hover { scrollbar-color: rgba(255,255,255,.3) transparent; }
+}
+
 /* ---------- Background ---------- */
 .bg { position: fixed; inset: 0 0 0 var(--side-w); overflow: hidden; background: #000; z-index: 0; }
 .bg__move { position: absolute; inset: -4%; will-change: transform; transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
@@ -167,7 +186,7 @@ body.is-collapsed .rail { opacity: 1; visibility: visible; pointer-events: auto;
 .search kbd { font: 10px var(--font-ui); color: var(--text-3); border: 1px solid var(--border-control); border-radius: 4px; padding: 1px 5px; }
 
 /* source list */
-.list { list-style: none; margin: 0; padding: 4px 16px 12px; overflow-y: auto; flex: 1; min-height: 0; scrollbar-width: thin; scrollbar-color: #555 transparent; }
+.list { list-style: none; margin: 0; padding: 4px 16px 12px; overflow-y: auto; flex: 1; min-height: 0; }
 .list__head { font-size: 10px; letter-spacing: .08em; font-weight: 700; color: var(--text-3); padding: 8px 0 6px; text-transform: uppercase; }
 .list__empty { color: var(--text-3); font-size: 12px; padding: 16px 4px; }
 .src-row { height: var(--row-h); display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; cursor: pointer; position: relative; font: 700 11.5px/1 var(--font-ui); letter-spacing: .02em; text-transform: uppercase; color: var(--text); }
