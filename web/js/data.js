@@ -26,6 +26,10 @@ export async function sendReport(report) {
   return send("reports", report);
 }
 
+export async function sendContact(message) {
+  return send("contact_messages", message);
+}
+
 export async function sendSuggestion(suggestion) {
   return send("suggestions", suggestion);
 }

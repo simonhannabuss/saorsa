@@ -1,6 +1,6 @@
 // Saorsa front end: left column, reader, report / suggest panels.
-import { CATEGORIES, SUB_FILTERS } from "./config.js";
-import { loadSources, sendReport, sendSuggestion } from "./data.js";
+import { CATEGORIES, SUB_FILTERS, SUPPORT_LINKS } from "./config.js";
+import { loadSources, sendReport, sendSuggestion, sendContact } from "./data.js";
 import { loadSettings, initBackground, initTweakPanel } from "./background.js";
 
 const $ = (id) => document.getElementById(id);
@@ -132,7 +132,7 @@ function renderList() {
     </li>`).join("");
 }
 
-function renderAll() { renderTabs(); renderCats(); renderSub(); renderList(); }
+function renderAll() { renderTabs(); renderCats(); renderSub(); renderList(); renderRail(); }
 
 /* ---------------- reader ---------------- */
 function openSource(s, { push = true } = {}) {
@@ -173,11 +173,23 @@ function openSource(s, { push = true } = {}) {
     frame.src = s.url;
   }
 
-  state.recent = [s.id, ...state.recent.filter((id) => id !== s.id)].slice(0, 30);
-  store.set("recent", state.recent);
+  addRecent(s);
+  store.set("last", s.id);
   if (push) history.pushState({ id: s.id }, "", `#/site/${encodeURIComponent(s.id)}`);
   renderList();
   scrollRowIntoView(s.id);
+}
+
+function addRecent(s) {
+  state.recent = [s.id, ...state.recent.filter((id) => id !== s.id)].slice(0, 30);
+  store.set("recent", state.recent);
+}
+
+// A click in the list: open inside Saorsa, or in a new tab if that's the reader's preference.
+function pickSource(s) {
+  if (!s) return;
+  if (prefs.openIn === "tab") { window.open(s.url, "_blank", "noopener"); addRecent(s); if (state.tab === "recent") renderList(); return; }
+  openSource(s);
 }
 
 function visibleFor(s) {
@@ -223,26 +235,47 @@ function scrollRowIntoView(id) {
 }
 
 /* ---------------- panels ---------------- */
-function openPanel(html) {
+// A panel takes over the left column. `back` is where the ‹ button goes
+// (e.g. the menu); without one, ‹ and × both close the panel.
+let panelBack = null;
+function openPanel(html, back = null) {
   const p = $("panel");
+  panelBack = back;
   p.innerHTML = html;
   p.classList.remove("is-hidden");
-  p.querySelector("[data-close]")?.focus();
+  if (document.body.classList.contains("is-collapsed")) setCollapsed(false);
+  p.querySelector("[data-back],[data-close]")?.focus();
   p.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closePanel));
+  p.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => (panelBack ? panelBack() : closePanel())));
 }
-function closePanel() { $("panel").classList.add("is-hidden"); $("panel").innerHTML = ""; }
+function closePanel() { panelBack = null; $("panel").classList.add("is-hidden"); $("panel").innerHTML = ""; }
 
-const panelHead = (title) => `<header class="panel__head">
-  <button class="icon-btn" data-close aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <h2>${title}</h2>
-  <button class="icon-btn" data-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>`;
+const ICON = {
+  back: '<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+  x: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  chev: '<svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>',
+  heart: '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  mail: '<svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>',
+  flag: '<svg viewBox="0 0 24 24"><path d="M5 21V4M5 5c3-2 6 2 9 0s4-1 5-.5v8.5c-1-.5-2-.5-5 .5s-6-2.5-9-.5"/></svg>',
+  star: '<svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg>',
+  keys: '<svg viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>',
+  user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.5"/><path d="M5 19c1.5-3 4-4.5 7-4.5s5.5 1.5 7 4.5"/></svg>',
+};
 
-function openReport(s = state.current, preset = "category") {
-  if (!s) return toast("Open a site first, then report it.");
+// ‹ back on the left only when there is somewhere to go back to; × always closes.
+const panelHead = (title, { back = false } = {}) => `<header class="panel__head">
+  ${back ? `<button class="icon-btn" data-back aria-label="Back">${ICON.back}</button>` : ""}
+  <h2 ${back ? "" : 'style="padding-left:8px"'}>${title}</h2>
+  <button class="icon-btn" data-close aria-label="Close">${ICON.x}</button></header>`;
+
+/* ---- Report a problem (P7-13 / 14 / 15) ---- */
+function openReport(s = state.current, preset = "category", back = null) {
+  if (!s) return openReportPicker(preset, back);
   const listed = [catOf(s.category)?.label, s.perspective && SUB_FILTERS.geo.options.find((o) => o.id === s.perspective)?.label,
     ...(s.topics || []).map((t) => SUB_FILTERS[s.category]?.options.find((o) => o.id === t)?.label)].filter(Boolean).join(" · ");
   const types = [["category", "Wrong category or topic"], ["broken", "Broken or won’t load"], ["independent", "No longer independent"], ["other", "Something else"]];
-  openPanel(`${panelHead("Report a problem")}
+  openPanel(`${panelHead("Report a problem", { back: !!back })}
   <form class="panel__body" id="reportForm">
     <p>Tell us what’s wrong with this site. We check every report before changing anything.</p>
     <div class="site-card"><span class="ini">${esc(s.domain[0].toUpperCase())}</span><div><strong>${esc(s.domain)}</strong><small>Listed in: ${esc(listed || "—")}${s.country ? ` · ${esc(s.country)}` : ""}</small></div></div>
@@ -250,13 +283,14 @@ function openReport(s = state.current, preset = "category") {
     ${types.map(([v, l]) => `<label class="choice"><input type="radio" name="type" value="${v}" ${v === preset ? "checked" : ""}> ${l}</label>`).join("")}
     <div id="moveTo">
       <span class="field-label">Where should it go?</span>
-      <div class="chips-pick" id="rCats" style="margin-top:12px">${CATEGORIES.map((c) => `<button type="button" class="pill" data-cat="${c.id}" style="--c:${c.color}"><span class="dot"></span>${c.label}</button>`).join("")}</div>
+      <div class="chips-pick" id="rCats" style="margin-top:12px">${CATEGORIES.map((c) => `<button type="button" class="pill" data-cat="${c.id}">${c.label}</button>`).join("")}</div>
       <span class="field-label" style="display:block;margin-top:14px">Topic <small style="color:var(--text-3)">optional</small></span>
       <div class="chips-pick" id="rTopics" style="margin-top:12px"></div>
     </div>
     <textarea name="note" rows="3" placeholder="Anything else? (optional)"></textarea>
+    <p class="hint">Broken reports need no account. The others will need a free account once accounts are live.</p>
   </form>
-  <footer class="panel__foot"><button class="btn btn--ghost" data-close>Cancel</button><button class="btn btn--accent" id="reportSend">Send report</button></footer>`);
+  <footer class="panel__foot"><button class="btn btn--ghost" data-close>Cancel</button><button class="btn btn--accent" id="reportSend">Send report</button></footer>`, back);
 
   const form = $("reportForm");
   let cat = null, topic = null;
@@ -267,6 +301,7 @@ function openReport(s = state.current, preset = "category") {
   };
   drawTopics(); syncType();
   form.addEventListener("change", syncType);
+  form.addEventListener("submit", (e) => e.preventDefault());
   $("rCats").addEventListener("click", (e) => {
     const b = e.target.closest("[data-cat]"); if (!b) return;
     cat = b.dataset.cat; topic = null;
@@ -277,8 +312,40 @@ function openReport(s = state.current, preset = "category") {
     topic = topic === b.dataset.t ? null : b.dataset.t; drawTopics();
   });
   $("reportSend").addEventListener("click", async () => {
-    const report = { site: s.domain, url: s.url, type: form.type.value, listed_as: listed, suggested_category: form.type.value === "category" ? cat : null, suggested_topic: form.type.value === "category" ? topic : null, note: form.note.value.trim() || null };
-    try { await sendReport(report); showSent(s, report); } catch (err) { toast("Couldn’t send that. Please try again."); console.error(err); }
+    const type = form.type.value;
+    if (type === "category" && !cat) return toast("Pick the category it should be in.");
+    if ((type === "other" || type === "independent") && !form.note.value.trim()) { form.note.focus(); return toast("Add a short note so we know what to check."); }
+    const report = { site: s.domain, url: s.url, type, listed_as: listed, suggested_category: type === "category" ? cat : null, suggested_topic: type === "category" ? topic : null, note: form.note.value.trim() || null };
+    try {
+      await sendReport(report);
+      if (type === "broken") store.set(`broken:${s.id}:${new Date().toISOString().slice(0, 10)}`, true);
+      showSent(s, report);
+    } catch (err) { toast("Couldn’t send that. Please try again."); console.error(err); }
+  });
+}
+
+// From the menu with no site open: pick the site first.
+function openReportPicker(preset = "category", back = null) {
+  openPanel(`${panelHead("Report a problem", { back: !!back })}
+  <div class="panel__body">
+    <p>Which site is the problem with?</p>
+    <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      <input id="pickInput" type="search" placeholder="Type the site’s name" autocomplete="off" spellcheck="false"></label>
+    <ul class="pick-list" id="pickList"></ul>
+  </div>`, back);
+  const draw = () => {
+    const q = $("pickInput").value.trim().toLowerCase();
+    const items = (q ? state.sources.filter((s) => s.domain.includes(q) || (s.name || "").toLowerCase().includes(q)) : state.recent.map(findById).filter(Boolean)).slice(0, 30);
+    $("pickList").innerHTML = (q ? "" : `<li class="list__head">${items.length ? "Recently opened" : "Start typing to find a site"}</li>`)
+      + items.map((s) => `<li class="src-row" data-id="${esc(s.id)}" tabindex="0"><span class="ini">${esc(s.domain[0].toUpperCase())}</span><span class="nm">${esc(s.domain)}</span><span class="cat">${esc(catOf(s.category)?.label || "")}</span></li>`).join("")
+      + (q && !items.length ? '<li class="list__empty">No site matches that.</li>' : "");
+  };
+  draw();
+  $("pickInput").addEventListener("input", draw);
+  $("pickInput").focus();
+  $("pickList").addEventListener("click", (e) => {
+    const r = e.target.closest("[data-id]"); if (!r) return;
+    openReport(findById(r.dataset.id), preset, () => openReportPicker(preset, back));
   });
 }
 
@@ -302,20 +369,24 @@ async function reportBroken(s = state.current) {
   toast("Reported as broken — thanks. Our nightly check will confirm it.");
 }
 
-function openSuggest() {
-  openPanel(`${panelHead("Suggest a source")}
+/* ---- Suggest a source (P7-02 / 03) ---- */
+const COUNTRY_OPTIONS = '<option value="">Select a country</option><option value="UK">UK</option><option value="US">US</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="NZ">New Zealand</option><option value="IE">Ireland</option><option value="other">Somewhere else</option>';
+
+function openSuggest(back = openMenu) {
+  openPanel(`${panelHead("Suggest a source", { back: !!back })}
   <form class="panel__body" id="suggestForm">
     <p>Know an independent site we’re missing? Paste the address and we’ll check it.</p>
     <span class="field-label">Website address</span>
     <input class="text-input" name="url" type="url" placeholder="https://www.example-news.org" required>
     <span class="field-label">Category</span>
-    <div class="chips-pick" id="sCats">${CATEGORIES.map((c) => `<button type="button" class="pill" data-cat="${c.id}" style="--c:${c.color}"><span class="dot"></span>${c.label}</button>`).join("")}</div>
+    <div class="chips-pick" id="sCats">${CATEGORIES.map((c) => `<button type="button" class="pill" data-cat="${c.id}">${c.label}</button>`).join("")}</div>
     <span class="field-label">Country</span>
-    <label class="ctl ctl--select" style="height:40px"><select name="country"><option value="">Select a country</option><option>UK</option><option>US</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="NZ">New Zealand</option><option value="IE">Ireland</option></select></label>
+    <label class="ctl ctl--select field-select"><select name="country">${COUNTRY_OPTIONS}</select></label>
     <textarea name="note" rows="3" placeholder="Why should it be on Saorsa? (optional)"></textarea>
   </form>
-  <footer class="panel__foot"><button class="btn btn--ghost" data-close>Cancel</button><button class="btn btn--accent" id="suggestSend">Send suggestion</button></footer>`);
+  <footer class="panel__foot"><button class="btn btn--ghost" data-close>Cancel</button><button class="btn btn--accent" id="suggestSend">Send suggestion</button></footer>`, back);
   let cat = null;
+  $("suggestForm").addEventListener("submit", (e) => e.preventDefault());
   $("sCats").addEventListener("click", (e) => { const b = e.target.closest("[data-cat]"); if (!b) return; cat = b.dataset.cat; $("sCats").querySelectorAll(".pill").forEach((p) => p.classList.toggle("is-on", p === b)); });
   $("suggestSend").addEventListener("click", async () => {
     const f = $("suggestForm");
@@ -325,23 +396,137 @@ function openSuggest() {
   });
 }
 
-function openMenu() {
-  openPanel(`${panelHead("Menu")}
-  <div class="panel__body">
-    <button class="choice" data-act="suggest">Suggest a source</button>
-    <button class="choice" data-act="report">Report a problem with this site</button>
-    <button class="choice" data-act="tweak">Background tweaks (T)</button>
-    <button class="choice" data-act="keys">Keyboard shortcuts</button>
-    <p class="hint">Account, Founder membership and support links come next (see README).</p>
-  </div>`);
-  $("panel").querySelector(".panel__body").addEventListener("click", (e) => {
-    const act = e.target.closest("[data-act]")?.dataset.act;
-    if (act === "suggest") openSuggest();
-    if (act === "report") { closePanel(); openReport(); }
-    if (act === "tweak") { closePanel(); tweak.toggle(); }
-    if (act === "keys") openPanel(`${panelHead("Keyboard shortcuts")}<div class="panel__body">
-      ${[["/", "Search"], ["S", "Shuffle"], ["← →", "Previous / next site"], ["R", "Report a problem"], ["Esc", "Close / back"], ["T", "Background tweaks"]].map(([k, l]) => `<div class="row"><kbd class="choice" style="width:64px;justify-content:center">${k}</kbd><span>${l}</span></div>`).join("")}</div>`);
+/* ---- Contact (P7-04) ---- */
+function openContact(back = openMenu) {
+  const topics = ["General", "Report a problem", "Rating feedback", "Membership & billing", "Press", "Suggest a website"];
+  openPanel(`${panelHead("Contact Saorsa", { back: !!back })}
+  <form class="panel__body" id="contactForm">
+    <p>Questions, problems, press — we read everything.</p>
+    <span class="field-label">What’s it about?</span>
+    <div class="chips-pick" id="cTopics">${topics.map((t, i) => `<button type="button" class="pill ${i === 0 ? "is-on" : ""}" data-t="${esc(t)}">${t}</button>`).join("")}</div>
+    <p class="hint is-hidden" id="cSuggestHint">Suggesting a website? <button type="button" class="m-textlink" id="cToSuggest">Use Suggest a source</button> so it can be tracked.</p>
+    <span class="field-label">Name</span>
+    <input class="text-input" name="name" placeholder="Your name" autocomplete="name">
+    <span class="field-label">Email</span>
+    <input class="text-input" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+    <span class="field-label">Message</span>
+    <textarea name="message" rows="5" placeholder="How can we help?"></textarea>
+    <p class="hint">We only use your email to reply.</p>
+  </form>
+  <footer class="panel__foot"><button class="btn btn--ghost" data-close>Cancel</button><button class="btn btn--accent" id="contactSend">Send message</button></footer>`, back);
+  let topic = topics[0];
+  $("contactForm").addEventListener("submit", (e) => e.preventDefault());
+  $("cTopics").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-t]"); if (!b) return; topic = b.dataset.t;
+    $("cTopics").querySelectorAll(".pill").forEach((p) => p.classList.toggle("is-on", p === b));
+    $("cSuggestHint").classList.toggle("is-hidden", topic !== "Suggest a website");
   });
+  $("cToSuggest").addEventListener("click", () => openSuggest(() => openContact(back)));
+  $("contactSend").addEventListener("click", async () => {
+    const f = $("contactForm");
+    if (!f.email.value || !f.email.checkValidity()) { f.email.focus(); return toast("Add your email so we can reply."); }
+    if (!f.message.value.trim()) { f.message.focus(); return toast("Write a message first."); }
+    await sendContact({ topic, name: f.name.value.trim() || null, email: f.email.value.trim(), message: f.message.value.trim(), site: state.current?.domain || null }).catch(() => {});
+    openPanel(`${panelHead("Message sent")}<div class="panel__body sent"><div class="tick">✓</div><h2>Thanks — we’ll reply soon</h2><p>We usually answer within a few days.</p><div class="row row--center"><button class="btn btn--accent" data-close>Done</button></div></div>`);
+  });
+}
+
+/* ---- Support Saorsa (NOW · 06) ---- */
+function openSupport(back = null) {
+  const amounts = [3, 5, 10, 25];
+  let amount = 10;
+  const platforms = [["kofi", "Ko-fi", "Tips & memberships"], ["buymeacoffee", "Buy Me a Coffee", "Quick tips"], ["opencollective", "Open Collective", "Public, transparent budget"], ["liberapay", "Liberapay", "Recurring, non-profit"], ["bitcoin", "Bitcoin / Lightning", "On-chain or instant"], ["monero", "Monero", "Private donations"]];
+  openPanel(`${panelHead("Support Saorsa", { back: !!back })}
+  <div class="panel__body" id="supportBody">
+    <p>No ads, no tracking, and no paywall on the news. Pick whatever suits you.</p>
+    <button class="founder" data-link="founder"><span class="badge-star">${ICON.star}</span><span class="m-txt">Become a Founder · £29 once<small>Saved favourites for life + Founder badge</small></span>${ICON.chev}</button>
+    <span class="m-label">One-off donation</span>
+    <div class="amounts" id="amounts">${amounts.map((a) => `<button data-amt="${a}" class="${a === amount ? "is-on" : ""}">£${a}</button>`).join("")}<button data-amt="other">Other</button></div>
+    <div class="pay"><button class="btn btn--accent" data-link="donate" id="donateBtn">Donate £${amount}</button><button class="btn btn--paypal" data-link="paypal">PayPal</button></div>
+    <p class="hint">Card, Apple Pay & Google Pay via one secure checkout</p>
+    <span class="m-label">Monthly</span>
+    <button class="m-link m-link--heart" data-link="monthly">${ICON.heart}<span class="m-txt">Supporter · £3 / month</span><small>Cancel anytime</small>${ICON.chev}</button>
+    <span class="m-label">Other ways to give</span>
+    <div class="platforms">${platforms.map(([k, n, d]) => `<button data-link="${k}">${n}<small>${d}</small></button>`).join("")}</div>
+  </div>`, back);
+  $("amounts").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-amt]"); if (!b) return;
+    amount = b.dataset.amt === "other" ? "other" : Number(b.dataset.amt);
+    $("amounts").querySelectorAll("button").forEach((x) => x.classList.toggle("is-on", x === b));
+    $("donateBtn").textContent = amount === "other" ? "Donate" : `Donate £${amount}`;
+  });
+  $("supportBody").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-link]"); if (!b) return;
+    let url = SUPPORT_LINKS[b.dataset.link];
+    if (!url) return toast("That option isn’t set up yet — coming soon.");
+    if (b.dataset.link === "donate" && amount !== "other") url += (url.includes("?") ? "&" : "?") + `amount=${amount}`;
+    window.open(url, "_blank", "noopener");
+  });
+}
+
+/* ---- Keyboard shortcuts ---- */
+function openShortcuts(back = openMenu) {
+  openPanel(`${panelHead("Keyboard shortcuts", { back: !!back })}<div class="panel__body">
+    ${[["/", "Search"], ["S", "Shuffle"], ["← →", "Previous / next site"], ["R", "Report a problem"], ["?", "Keyboard shortcuts"], ["Esc", "Close / back"], ["T", "Background tweaks"]].map(([k, l]) => `<div class="row"><kbd class="choice" style="width:64px;justify-content:center">${k}</kbd><span>${l}</span></div>`).join("")}</div>`, back);
+}
+
+/* ---- Menu (NOW · 05) ---- */
+function openMenu() {
+  const p = prefs;
+  openPanel(`${panelHead("Menu")}
+  <div class="panel__body" id="menuBody" style="gap:22px">
+    <button class="m-link m-account" data-act="account"><span class="avatar">${ICON.user}</span><span class="m-txt">Sign in<small>Accounts and Founder membership are coming soon</small></span>${ICON.chev}</button>
+    <section class="m-section"><span class="m-label">About</span>
+      <p class="m-about">One window onto independent media from every corner. Saorsa doesn’t rank or rewrite anything: you choose what to read.</p>
+    </section>
+    <section class="m-section"><span class="m-label">Support Saorsa</span>
+      <button class="m-link m-link--heart" data-act="support">${ICON.heart}<span class="m-txt">Support Saorsa<small>Founder, donations & other ways</small></span>${ICON.chev}</button>
+    </section>
+    <section class="m-section"><span class="m-label">Preferences</span>
+      <div class="pref"><div>Open sources in</div><div class="mini-seg" id="prefOpen" style="flex:none"><button data-v="saorsa" class="${p.openIn === "saorsa" ? "is-on" : ""}">Saorsa</button><button data-v="tab" class="${p.openIn === "tab" ? "is-on" : ""}">New tab</button></div></div>
+      <div class="pref"><div>Background motion<small>Off for reduced-motion devices</small></div><button class="toggle ${p.motion ? "is-on" : ""}" data-pref="motion" aria-label="Background motion"></button></div>
+      <div class="pref"><div>Remember last source</div><button class="toggle ${p.remember ? "is-on" : ""}" data-pref="remember" aria-label="Remember last source"></button></div>
+      <div class="pref"><div>Show intro splash</div><button class="toggle ${p.splash ? "is-on" : ""}" data-pref="splash" aria-label="Show intro splash"></button></div>
+    </section>
+    <section class="m-section"><span class="m-label">Contribute</span>
+      <button class="m-link" data-act="suggest">${ICON.plus}<span class="m-txt">Suggest a source</span>${ICON.chev}</button>
+      <button class="m-link" data-act="contact">${ICON.mail}<span class="m-txt">Contact us</span>${ICON.chev}</button>
+      <button class="m-link" data-act="report">${ICON.flag}<span class="m-txt">Report a problem${state.current ? `<small>${esc(state.current.domain)} or another site</small>` : ""}</span>${ICON.chev}</button>
+    </section>
+  </div>
+  <footer class="m-foot"><button data-act="keys">${ICON.keys} Shortcuts <kbd>?</kbd></button></footer>`);
+  // listen on the menu's own elements (they are rebuilt each time), not on #panel
+  const onClick = (e) => {
+    const act = e.target.closest("[data-act]")?.dataset.act;
+    if (act === "account") toast("Accounts are coming soon.");
+    if (act === "support") openSupport(openMenu);
+    if (act === "suggest") openSuggest(openMenu);
+    if (act === "contact") openContact(openMenu);
+    if (act === "report") openReport(state.current, "category", openMenu);
+    if (act === "keys") openShortcuts(openMenu);
+    const t = e.target.closest("[data-pref]");
+    if (t) { prefs[t.dataset.pref] = !prefs[t.dataset.pref]; t.classList.toggle("is-on", prefs[t.dataset.pref]); savePrefs(); }
+    const o = e.target.closest("#prefOpen [data-v]");
+    if (o) { prefs.openIn = o.dataset.v; $("prefOpen").querySelectorAll("button").forEach((b) => b.classList.toggle("is-on", b === o)); savePrefs(); }
+  };
+  $("menuBody").addEventListener("click", onClick);
+  $("panel").querySelector(".m-foot").addEventListener("click", onClick);
+}
+
+/* ---------------- preferences ---------------- */
+const prefs = { openIn: "saorsa", motion: true, remember: false, splash: true, ...store.get("prefs", {}) };
+function savePrefs() { store.set("prefs", prefs); applyPrefs(); }
+function applyPrefs() { document.documentElement.classList.toggle("no-motion", !prefs.motion); }
+applyPrefs();
+
+/* ---------------- collapsed rail ---------------- */
+function setCollapsed(on) {
+  document.body.classList.toggle("is-collapsed", on);
+  store.set("collapsed", on);
+}
+function renderRail() {
+  $("railCats").innerHTML = CATEGORIES.map((c) => `<button class="rail__cat ${c.id === state.category && state.tab === "all" ? "is-on" : ""}" data-rail-cat="${c.id}" style="--c:${c.color}" title="${c.label} · ${state.sources.filter((s) => s.category === c.id).length} sources" aria-label="${c.label}"><span></span></button>`).join("");
+  document.querySelectorAll("#rail [data-rail]").forEach((b) => b.classList.toggle("is-on", (b.dataset.rail === "saved" || b.dataset.rail === "recent") && state.tab === b.dataset.rail));
 }
 
 /* ---------------- toast ---------------- */
@@ -363,7 +548,7 @@ function setSearching(on) {
 }
 
 /* ---------------- events ---------------- */
-$("tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (!b) return; state.tab = b.dataset.tab; renderTabs(); renderList(); });
+$("tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (!b) return; state.tab = b.dataset.tab; renderTabs(); renderList(); renderRail(); });
 $("cats").addEventListener("click", (e) => {
   if (e.target.closest("#catsMore")) { state.catsOpen = !state.catsOpen; renderCats(); return; }
   const b = e.target.closest("[data-cat]"); if (!b) return;
@@ -383,12 +568,24 @@ $("shuffleBtn").addEventListener("click", shuffle);
 $("searchBtn").addEventListener("click", () => setSearching(true));
 $("searchClose").addEventListener("click", () => setSearching(false));
 $("searchInput").addEventListener("input", (e) => { state.search = e.target.value; renderList(); });
-$("list").addEventListener("click", (e) => { const r = e.target.closest(".src-row"); if (r) openSource(findById(r.dataset.id)); });
-$("list").addEventListener("keydown", (e) => { if (e.key === "Enter") { const r = e.target.closest(".src-row"); if (r) openSource(findById(r.dataset.id)); } });
+$("list").addEventListener("click", (e) => { const r = e.target.closest(".src-row"); if (r) pickSource(findById(r.dataset.id)); });
+$("list").addEventListener("keydown", (e) => { if (e.key === "Enter") { const r = e.target.closest(".src-row"); if (r) pickSource(findById(r.dataset.id)); } });
 $("homeLink").addEventListener("click", (e) => { e.preventDefault(); goHome(); });
-$("collapseBtn").addEventListener("click", () => document.body.classList.toggle("is-collapsed"));
+$("collapseBtn").addEventListener("click", () => setCollapsed(true));
+$("rail").addEventListener("click", (e) => {
+  const c = e.target.closest("[data-rail-cat]");
+  if (c) { state.category = c.dataset.railCat; state.sub = []; state.tab = "all"; setCollapsed(false); renderAll(); return; }
+  const act = e.target.closest("[data-rail]")?.dataset.rail; if (!act) return;
+  if (act === "menu") return openMenu();
+  if (act === "home") return goHome();
+  if (act === "shuffle") return shuffle();
+  if (act === "support") return openSupport();
+  setCollapsed(false);
+  if (act === "search") setSearching(true);
+  if (act === "saved" || act === "recent") { state.tab = act; renderAll(); }
+});
 $("menuBtn").addEventListener("click", openMenu);
-$("supportLink").addEventListener("click", (e) => { e.preventDefault(); openPanel(`${panelHead("Support Saorsa")}<div class="panel__body"><p>Saorsa is independent and ad-free, kept alive by readers.</p><p class="hint">PayPal quick donation, other ways to give and the Founder membership go here (see the NOW · 06 design).</p></div>`); });
+$("supportLink").addEventListener("click", (e) => { e.preventDefault(); openSupport(); });
 $("backBtn").addEventListener("click", () => goHome());
 $("prevBtn").addEventListener("click", () => step(-1));
 $("nextBtn").addEventListener("click", () => step(1));
@@ -414,7 +611,7 @@ window.addEventListener("resize", () => { if (!state.catsOpen) renderCats(); });
 document.addEventListener("keydown", (e) => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
   if (e.key === "Escape") {
-    if (!$("panel").classList.contains("is-hidden")) return closePanel();
+    if (!$("panel").classList.contains("is-hidden")) return panelBack ? panelBack() : closePanel();
     if (state.searching) return setSearching(false);
     if (state.current) return goHome();
   }
@@ -423,6 +620,7 @@ document.addEventListener("keydown", (e) => {
   else if (e.key.toLowerCase() === "s") shuffle();
   else if (e.key.toLowerCase() === "r") openReport();
   else if (e.key.toLowerCase() === "t") tweak.toggle();
+  else if (e.key === "?") openShortcuts(null);
   else if (e.key === "ArrowRight") step(1);
   else if (e.key === "ArrowLeft") step(-1);
 });
@@ -437,7 +635,7 @@ function routeFromHash(push) {
 /* ---------------- splash ---------------- */
 function splash() {
   const el = $("splash");
-  if (sessionStorage.getItem("saorsa.splash") || matchMedia("(prefers-reduced-motion: reduce)").matches || location.hash) { el.remove(); return; }
+  if (!prefs.splash || sessionStorage.getItem("saorsa.splash") || matchMedia("(prefers-reduced-motion: reduce)").matches || location.hash) { el.remove(); return; }
   sessionStorage.setItem("saorsa.splash", "1");
   const hide = () => { el.classList.add("is-gone"); setTimeout(() => el.remove(), 700); };
   setTimeout(hide, 1200);
@@ -449,5 +647,8 @@ function splash() {
 const bgApi = initBackground(settings);
 const tweak = initTweakPanel(settings, bgApi, refreshSources);
 splash();
+if (store.get("collapsed", false)) setCollapsed(true);
 await refreshSources();
 routeFromHash(false);
+// "Remember last source": reopen it when Saorsa starts on the home page.
+if (!state.current && prefs.remember && prefs.openIn === "saorsa") { const last = findById(store.get("last", null)); if (last) openSource(last); }

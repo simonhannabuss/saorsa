@@ -59,17 +59,19 @@ Once PocketBase is running, set `POCKETBASE_URL` in `js/config.js` and the site 
 
 | | Status |
 |---|---|
-| Left column: tabs, 2-row categories + ▾, perspective/topic filters, countries, sort, shuffle | ✅ working |
+| Left column: tabs (All / Recent / Saved), categories, perspective/topic filters, countries, sort, shuffle | ✅ working |
 | Search across all categories | ✅ |
 | Reader: frame, prev/next, save, share link, open original, report | ✅ |
 | Blocked / down fallback card + one-tap "Report as broken" | ✅ (needs `check_embeds.py` data) |
-| Report a problem / Suggest a source panels | ✅ saved in the browser until PocketBase is connected |
+| Menu, Report a problem (also from the menu, with a site picker), Suggest a source, Contact | ✅ saved in the browser until PocketBase is connected |
+| Support Saorsa panel (Founder, donation amounts, PayPal, monthly, other platforms) | ✅ layout. Paste the payment links into `SUPPORT_LINKS` in `js/config.js` |
+| Preferences: open sources in Saorsa / new tab, background motion, remember last source, intro splash | ✅ in the browser |
 | Saved & Recent | ✅ in the browser. Founders get them synced via PocketBase later |
 | Video background, 45% overlay, cursor glow, parallax, grain, reduced-motion still | ✅ |
 | Splash (first visit per session) | ✅ |
 | Mobile list ↔ reader | ✅ basic |
-| Sign in (email code), account area, Founder payments, support slide-out, contact | ⏳ next |
-| Rail (collapsed sidebar) | ⏳ (collapse hides the column for now) |
+| Rail (collapsed sidebar, 64px) | ✅ desktop |
+| Sign in (email code), account area, Founder membership | ⏳ next |
 
 ## Before going live
 

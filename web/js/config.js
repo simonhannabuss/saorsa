@@ -46,3 +46,18 @@ export const POCKETBASE_URL = "";
 // Show review-queue candidates (pending) alongside live sites?
 // On by default only on localhost and dev.* hosts. Never on in production.
 export const PREVIEW_DEFAULT = /^(localhost|127\.|dev\.)/.test(location.hostname);
+
+// Support Saorsa (NOW · 06). Paste each payment link when the account exists.
+// An empty link shows "not set up yet" instead of opening anything.
+export const SUPPORT_LINKS = {
+  founder: "",        // Become a Founder (£29 once)
+  donate: "",         // card / Apple Pay / Google Pay checkout (e.g. a Stripe Payment Link)
+  paypal: "",         // PayPal.me or PayPal donate link
+  monthly: "",        // Supporter · £3 / month
+  kofi: "",
+  buymeacoffee: "",
+  opencollective: "",
+  liberapay: "",
+  bitcoin: "",        // a page with the address / Lightning invoice
+  monero: "",
+};

@@ -8,9 +8,9 @@
 // The built-in `users` collection is used for accounts (email code sign-in).
 
 const CATS = ["geo", "spiritual", "health", "exo", "science", "money", "history"];
-const TOPICS = ["occult", "faith", "eastern", "new-age", "sceptic", "natural", "mind", "evidence",
-  "power", "markets", "economy", "crypto", "ancient", "disclosure", "sightings",
-  "fringe", "space", "nature", "tech", "mainstream", "alternative"];
+const TOPICS = ["faith", "eastern", "new-age", "occult", "sceptic", "natural", "mind", "evidence",
+  "power", "markets", "economy", "crypto", "disclosure", "paranormal",
+  "space", "nature", "tech", "hidden", "mainstream"];
 const COUNTRIES = ["UK", "US", "CA", "AU", "NZ", "IE"];
 
 migrate((app) => {
@@ -86,6 +86,23 @@ migrate((app) => {
   });
   app.save(reports);
 
+  const contact = new Collection({
+    type: "base",
+    name: "contact_messages",
+    listRule: null, viewRule: null, updateRule: null, deleteRule: null,
+    createRule: "", // anyone can write in (rate-limit in the proxy)
+    fields: [
+      { name: "topic", type: "text", max: 60 },
+      { name: "name", type: "text", max: 120 },
+      { name: "email", type: "email", required: true },
+      { name: "message", type: "text", required: true, max: 5000 },
+      { name: "site", type: "text", max: 200 },
+      { name: "status", type: "select", values: ["new", "replied", "closed"], maxSelect: 1 },
+      { name: "created", type: "autodate", onCreate: true },
+    ],
+  });
+  app.save(contact);
+
   const saved = new Collection({
     type: "base",
     name: "saved_lists",
@@ -107,7 +124,7 @@ migrate((app) => {
   users.fields.add(new BoolField({ name: "founder" }));
   app.save(users);
 }, (app) => {
-  for (const name of ["saved_lists", "reports", "suggestions", "sources"]) {
+  for (const name of ["saved_lists", "contact_messages", "reports", "suggestions", "sources"]) {
     try { app.delete(app.findCollectionByNameOrId(name)); } catch (_) {}
   }
 });

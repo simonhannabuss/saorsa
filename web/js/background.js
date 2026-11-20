@@ -3,7 +3,13 @@
 import { BG_DEFAULTS, PREVIEW_DEFAULT } from "./config.js";
 
 const KEY = "saorsa.bg";
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const reduceMotionMq = matchMedia("(prefers-reduced-motion: reduce)");
+// Still if the device asks for reduced motion, or the reader turned
+// "Background motion" off in the menu (adds .no-motion to <html>).
+const reduceMotion = {
+  get matches() { return reduceMotionMq.matches || document.documentElement.classList.contains("no-motion"); },
+  addEventListener: (...a) => reduceMotionMq.addEventListener?.(...a),
+};
 
 export function loadSettings() {
   let saved = {};
@@ -47,6 +53,7 @@ export function initBackground(settings) {
   };
   document.addEventListener("visibilitychange", playState);
   new MutationObserver(playState).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  new MutationObserver(playState).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
   // Cursor glow + parallax, eased so it feels heavy.
   let tx = 0, ty = 0, gx = -999, gy = -999, cx = -999, cy = -999, px = 0, py = 0;
