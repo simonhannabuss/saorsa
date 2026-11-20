@@ -38,7 +38,7 @@
   --grain: 0.08;
 
   /* layout */
-  --side-w: 320px;
+  --side-w: 330px;
   --ctl-h: 30px;
   --row-h: 32px;
   --radius: 8px;
@@ -242,7 +242,7 @@ textarea, .text-input { width: 100%; border: 1px solid var(--border-control); ba
   body.is-reading .side { display: none; }
   .bg { inset: 0; }
   .hero__title { font-size: 44px; }
-  .toolbar .tags, .toolbar #otherSideBtn, .toolbar #reloadBtn, .toolbar .divider { display: none; }
+  .toolbar .tags, .toolbar #reloadBtn, .toolbar .divider { display: none; }
   .toast { left: 50%; }
 }
 

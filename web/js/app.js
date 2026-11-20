@@ -1,5 +1,5 @@
 // Saorsa front end: left column, reader, report / suggest panels.
-import { CATEGORIES, SUB_FILTERS, OTHER_SIDE } from "./config.js";
+import { CATEGORIES, SUB_FILTERS } from "./config.js";
 import { loadSources, sendReport, sendSuggestion } from "./data.js";
 import { loadSettings, initBackground, initTweakPanel } from "./background.js";
 
@@ -153,7 +153,6 @@ function openSource(s, { push = true } = {}) {
     if (o) tags.push(`<span class="tag">${o.label}${i === 0 && s.topics.length > 1 ? " <small>main</small>" : ""}</span>`);
   });
   $("rTags").innerHTML = tags.join("");
-  $("otherSideBtn").classList.toggle("is-hidden", !(s.category === "geo" && s.perspective));
   $("saveBtn").classList.toggle("is-on", state.saved.includes(s.id));
 
   const frame = $("frame");
@@ -210,14 +209,6 @@ function shuffle() {
   const pool = visible().filter((s) => s.id !== state.current?.id);
   const all = pool.length ? pool : state.sources;
   if (all.length) openSource(all[Math.floor(Math.random() * all.length)]);
-}
-
-function otherSide() {
-  const s = state.current; if (!s?.perspective) return;
-  const targets = OTHER_SIDE[s.perspective] || [];
-  const pool = state.sources.filter((x) => x.category === "geo" && targets.includes(x.perspective));
-  if (!pool.length) return toast("No sites from another perspective yet.");
-  openSource(pool[Math.floor(Math.random() * pool.length)]);
 }
 
 function scrollRowIntoView(id) {
@@ -408,7 +399,6 @@ $("shareBtn").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(location.href); toast("Link copied."); } catch { toast(location.href); }
 });
 $("reportBtn").addEventListener("click", () => openReport());
-$("otherSideBtn").addEventListener("click", otherSide);
 $("fbNext").addEventListener("click", () => step(1));
 $("fbReport").addEventListener("click", () => reportBroken());
 

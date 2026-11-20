@@ -61,7 +61,7 @@ Once PocketBase is running, set `POCKETBASE_URL` in `js/config.js` and the site 
 |---|---|
 | Left column: tabs, 2-row categories + ▾, perspective/topic filters, countries, sort, shuffle | ✅ working |
 | Search across all categories | ✅ |
-| Reader: frame, prev/next, Other side, save, share link, open original, report | ✅ |
+| Reader: frame, prev/next, save, share link, open original, report | ✅ |
 | Blocked / down fallback card + one-tap "Report as broken" | ✅ (needs `check_embeds.py` data) |
 | Report a problem / Suggest a source panels | ✅ saved in the browser until PocketBase is connected |
 | Saved & Recent | ✅ in the browser. Founders get them synced via PocketBase later |

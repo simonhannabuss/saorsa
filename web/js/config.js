@@ -33,6 +33,7 @@ export const SUB_FILTERS = {
 };
 
 // Opposite sides for the "Other side" button on Geo sites.
+// Parked for now (Simon, 20 Nov): "Other side" button removed from the reader.
 export const OTHER_SIDE = { left: ["right", "centre"], right: ["left", "centre"], centre: ["left", "right"], hidden: ["centre"] };
 
 // Background defaults. The tweak panel (press T) overrides them in this browser only.
