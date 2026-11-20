@@ -50,7 +50,8 @@
           <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
         <a class="wordmark" href="#" id="homeLink" aria-label="Saorsa home">SAORSA</a>
-        <button class="icon-btn" id="collapseBtn" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <button class="icon-btn only-mobile" id="mSearchBtn" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></button>
+        <button class="icon-btn only-desktop" id="collapseBtn" aria-label="Collapse sidebar" data-label="Close sidebar">
           <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15"/></svg>
         </button>
       </header>
@@ -69,11 +70,22 @@
         </div>
 
         <hr class="divider-h" aria-hidden="true">
+        <!-- Rolled up (P7-18): one breadcrumb line instead of the filters -->
+        <div class="row crumb-row" id="crumbRow">
+          <button class="crumb" id="crumb" aria-label="Show filters"></button>
+          <button class="ctl ctl--square ctl--accent" id="shuffleBtn2" aria-label="Shuffle (S)" data-label="Shuffle" data-key="S"><svg viewBox="0 0 24 24"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.6-1 3.4-2.3M13.6 9.3C14.4 8 15.4 7 17 7h3M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></svg></button>
+        </div>
+        <!-- Mobile (NOW · 10): category / count line + filter sheet button -->
+        <div class="m-filter-row" id="mFilterRow">
+          <span id="mCount"></span>
+          <button class="btn btn--ghost" id="mFilterBtn"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span id="mFilterLabel">Country · A–Z</span></button>
+        </div>
+        <div class="filters" id="filters"><div class="filters__in">
         <div class="cats" id="cats"></div>
         <hr class="divider-h" aria-hidden="true">
         <div class="pills" id="subFilter"></div>
 
-        <div class="row">
+        <div class="row" id="countryRow">
           <label class="ctl ctl--select">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.7 2.5 14.3 0 17M12 3.5c-2.5 2.7-2.5 14.3 0 17"/></svg>
             <select id="countrySel" aria-label="Country">
@@ -90,10 +102,13 @@
               <option value="country">By country</option>
             </select>
           </label>
-          <button class="ctl ctl--square ctl--accent" id="shuffleBtn" aria-label="Shuffle (S)" title="Shuffle ( S )">
+          <button class="ctl ctl--square ctl--accent" id="shuffleBtn" aria-label="Shuffle (S)" data-label="Shuffle" data-key="S">
             <svg viewBox="0 0 24 24"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.6-1 3.4-2.3M13.6 9.3C14.4 8 15.4 7 17 7h3M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></svg>
           </button>
         </div>
+        <!-- Roll-up handle (P7-17) -->
+        <div class="rollup"><span></span><button class="rollup__btn" id="hideFilters">Hide filters <svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><span></span></div>
+        </div></div>
       </div>
 
       <!-- Search mode (replaces the tab row) -->
@@ -116,6 +131,8 @@
       <!-- Panels that take over the column (report / suggest / sent) -->
       <section class="panel is-hidden" id="panel" aria-live="polite"></section>
 
+      <button class="fab" id="fabShuffle"><svg viewBox="0 0 24 24"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.6-1 3.4-2.3M13.6 9.3C14.4 8 15.4 7 17 7h3M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></svg> Surprise me</button>
+
       <footer class="side__foot">
         <svg class="heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
         <span>Independent &amp; ad-free</span>
@@ -137,7 +154,7 @@
       <section class="reader is-hidden" id="reader">
         <div class="toolbar">
           <div class="progress is-hidden" id="progress" aria-hidden="true"><span></span></div>
-          <button class="icon-btn only-mobile" id="backBtn" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <button class="icon-btn only-mobile" id="backBtn" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
           <button class="icon-btn" id="prevBtn" aria-label="Previous source (←)" title="Previous ( ← )"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
           <button class="icon-btn" id="nextBtn" aria-label="Next source (→)" title="Next ( → )"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
           <span class="divider"></span>
@@ -155,6 +172,7 @@
           <a class="btn btn--ghost" id="openBtn" target="_blank" rel="noopener noreferrer">Open original
             <svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
         </div>
+        <div class="swipe-hint is-hidden" id="swipeHint">Swipe ← → on the header for next / previous</div>
         <div class="frame-wrap">
           <iframe id="frame" title="Source" referrerpolicy="no-referrer"
             sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox"></iframe>
@@ -185,7 +203,18 @@
             </div>
           </div>
         </div>
+        <!-- Mobile bottom bar (NOW · 11) -->
+        <nav class="mbar" aria-label="Reader">
+          <button data-m="prev"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><span>Prev</span></button>
+          <button data-m="sources"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span>Sources</span></button>
+          <button data-m="shuffle" class="mbar__shuffle" aria-label="Shuffle"><svg viewBox="0 0 24 24"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.6-1 3.4-2.3M13.6 9.3C14.4 8 15.4 7 17 7h3M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></svg></button>
+          <button data-m="saved"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg><span>Saved</span></button>
+          <button data-m="next"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg><span>Next</span></button>
+        </nav>
       </section>
+
+      <!-- Account area (P7-05) -->
+      <section class="account is-hidden" id="account" aria-label="Your account"></section>
     </main>
   </div>
 
@@ -198,6 +227,21 @@
 
   <div class="toast is-hidden" id="toast" role="status"></div>
   <div class="hover-label" id="hoverLabel" aria-hidden="true"></div>
+  <div class="rating-pop is-hidden" id="ratingPop" role="tooltip"></div>
+  <div class="modal-root is-hidden" id="modalRoot"></div>
+  <!-- Mobile filter sheet (NOW · 12) -->
+  <div class="sheet-root is-hidden" id="sheetRoot">
+    <div class="sheet" role="dialog" aria-label="Filters">
+      <span class="sheet__grab"></span>
+      <div class="sheet__head"><h2 id="sheetTitle">Filter</h2><button class="m-textlink" id="sheetReset">Reset</button></div>
+      <div class="pills" id="sheetSub"></div>
+      <div class="row">
+        <label class="ctl ctl--select field-select"><select id="sheetCountry" aria-label="Country"><option value="">All countries</option><option value="UK">UK</option><option value="US">US</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="NZ">New Zealand</option><option value="IE">Ireland</option></select></label>
+        <label class="ctl ctl--select field-select"><select id="sheetSort" aria-label="Sort"><option value="az">A – Z</option><option value="za">Z – A</option><option value="country">By country</option></select></label>
+      </div>
+      <button class="btn btn--accent sheet__go" id="sheetGo">Show sources</button>
+    </div>
+  </div>
 
   <!-- Dev tweak panel: press T (or add ?tweak to the address) -->
   <div class="tweak is-hidden" id="tweak">
@@ -208,6 +252,7 @@
     <label>Grain <output id="o_grain"></output><input type="range" id="t_grain" min="0" max="0.3" step="0.01"></label>
     <label>Video speed <output id="o_speed"></output><input type="range" id="t_speed" min="0.25" max="1.5" step="0.05"></label>
     <label class="check"><input type="checkbox" id="t_preview"> Include review-queue sites (preview)</label>
+    <label>Preview account as<select id="t_plan" style="grid-column:1/-1"><option value="free">Free</option><option value="supporter">Supporter</option><option value="founder">Founder</option></select></label>
     <button class="btn btn--ghost" id="tweakReset">Reset</button>
     <p class="hint">Saved in this browser only. Copy the numbers into <code>css/saorsa.css</code> when you’re happy.</p>
   </div>

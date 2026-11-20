@@ -2,6 +2,8 @@
 import { CATEGORIES, SUB_FILTERS, SUPPORT_LINKS } from "./config.js";
 import { loadSources, sendReport, sendSuggestion, sendContact } from "./data.js";
 import { loadSettings, initBackground, initTweakPanel } from "./background.js";
+import { getSession, plan, canSave, previewPlan, setPreviewPlan, PREVIEW } from "./auth.js";
+import { initAccount, openSignIn, openPaywall, openAccount, closeAccount, savedIds, toggleSaved, afterSaveToast, savedListHTML, handleSavedClick, modalOpen } from "./account.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -9,6 +11,7 @@ const catOf = (id) => CATEGORIES.find((c) => c.id === id);
 const store = {
   get: (k, d) => { try { return JSON.parse(localStorage.getItem("saorsa." + k)) ?? d; } catch { return d; } },
   set: (k, v) => { try { localStorage.setItem("saorsa." + k, JSON.stringify(v)); } catch {} },
+  getRaw: (k) => { try { return JSON.parse(localStorage.getItem("saorsa." + k)) || []; } catch { return []; } },
 };
 
 const state = {
@@ -22,10 +25,10 @@ const state = {
   searching: false,
   catsOpen: false,
   current: null,
-  saved: store.get("saved", []),
   recent: store.get("recent", []),
 };
 
+Object.defineProperty(state, "saved", { get: () => savedIds() });
 const settings = loadSettings();
 
 /* ---------------- data ---------------- */
@@ -45,7 +48,7 @@ function visible() {
     const q = state.search.trim().toLowerCase();
     return list.filter((s) => s.domain.includes(q) || (s.name || "").toLowerCase().includes(q)).sort(byName);
   }
-  if (state.tab === "saved") return state.saved.map(findById).filter(Boolean);
+  if (state.tab === "saved") return savedIds().map(findById).filter(Boolean);
   if (state.tab === "recent") return state.recent.map(findById).filter(Boolean);
 
   list = list.filter((s) => s.category === state.category);
@@ -64,9 +67,10 @@ const findById = (id) => state.sources.find((s) => s.id === id);
 
 /* ---------------- render: left column ---------------- */
 function renderTabs() {
+  document.body.classList.toggle("tab-other", state.tab !== "all");
   document.querySelectorAll("#tabs .seg__btn").forEach((b) => {
     b.classList.toggle("is-on", b.dataset.tab === state.tab);
-    if (b.dataset.tab === "saved") b.innerHTML = `Saved${state.saved.length ? `<span class="badge">${state.saved.length}</span>` : ""}`;
+    if (b.dataset.tab === "saved") b.innerHTML = `Saved${canSave() && state.saved.length ? `<span class="badge">${state.saved.length}</span>` : ""}`;
   });
 }
 
@@ -110,9 +114,22 @@ function renderSub() {
   el.innerHTML = `<button class="pill ${state.sub.length ? "" : "is-on"}" data-sub="">All</button>` + f.options.map(pill).join("");
 }
 
+// One source row. In the Saved tab rows get a ★ to un-save.
+function rowHTML(s, { star = false, showCat = false } = {}) {
+  return `<li class="src-row ${state.current?.id === s.id ? "is-on" : ""}" data-id="${esc(s.id)}" tabindex="0" title="${esc(s.name)}">
+      <span class="ini">${esc(s.domain[0].toUpperCase())}</span>
+      <span class="nm">${esc(s.domain)}</span>
+      ${s.status === "pending" ? '<span class="pend">Preview</span>' : ""}
+      ${showCat ? `<span class="cat">${esc(catOf(s.category)?.label || "")}</span>` : ""}
+      ${star ? `<button class="row-star" data-unsave="${esc(s.id)}" aria-label="Remove ${esc(s.domain)} from Saved" data-label="Remove from Saved"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg></button>` : ""}
+    </li>`;
+}
+
 function renderList() {
-  const items = visible();
   const el = $("list");
+  updateCounts();
+  if (state.tab === "saved" && !(state.searching && state.search.trim())) { el.innerHTML = savedListHTML(rowHTML); return; }
+  const items = visible();
   let head = "";
   if (state.searching && state.search.trim()) head = `${items.length} result${items.length === 1 ? "" : "s"} · all categories`;
   if (!items.length) {
@@ -123,13 +140,22 @@ function renderList() {
     return;
   }
   const showCat = state.searching || state.tab !== "all";
-  el.innerHTML = (head ? `<li class="list__head">${esc(head)}</li>` : "") + items.map((s) => `
-    <li class="src-row ${state.current?.id === s.id ? "is-on" : ""}" data-id="${esc(s.id)}" tabindex="0" title="${esc(s.name)}">
-      <span class="ini">${esc(s.domain[0].toUpperCase())}</span>
-      <span class="nm">${esc(s.domain)}</span>
-      ${s.status === "pending" ? '<span class="pend">Preview</span>' : ""}
-      ${showCat ? `<span class="cat">${esc(catOf(s.category)?.label || "")}</span>` : ""}
-    </li>`).join("");
+  el.innerHTML = (head ? `<li class="list__head">${esc(head)}</li>` : "") + items.map((s) => rowHTML(s, { showCat })).join("");
+}
+
+// Breadcrumb (rolled-up filters) and the mobile "GEO · 48 SOURCES" line.
+function updateCounts() {
+  const c = catOf(state.category);
+  const n = state.tab === "all" ? visible().length : null;
+  const f = SUB_FILTERS[state.category];
+  const subs = state.sub.map((id) => f.options.find((o) => o.id === id)?.label).filter(Boolean);
+  const country = state.country ? $("countrySel").selectedOptions[0]?.textContent : "";
+  const bits = [...subs, country].filter(Boolean);
+  $("crumb").innerHTML = `<i style="--c:${c.color}"></i><b>${esc(c.label)}</b>${bits.length ? `<span class="crumb__sep">›</span><span class="crumb__sub">${esc(bits.join(", "))}</span>` : ""}<span class="grow"></span>${n !== null ? `<small>${n} site${n === 1 ? "" : "s"}</small>` : ""}<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>`;
+  $("mCount").textContent = state.tab === "all" ? `${c.label} · ${n} source${n === 1 ? "" : "s"}` : state.tab === "saved" ? "Saved" : "Recent";
+  const sortLabel = { az: "A–Z", za: "Z–A", country: "By country" }[state.sort];
+  $("mFilterLabel").textContent = `${state.country ? country : "Country"} · ${sortLabel}${state.sub.length ? ` · ${state.sub.length}` : ""}`;
+  $("mFilterRow").classList.toggle("is-hidden", state.tab !== "all" || state.searching);
 }
 
 function renderAll() { renderTabs(); renderCats(); renderSub(); renderList(); renderRail(); }
@@ -138,6 +164,7 @@ function renderAll() { renderTabs(); renderCats(); renderSub(); renderList(); re
 function openSource(s, { push = true } = {}) {
   if (!s) return;
   state.current = s;
+  hideAccount({ restore: false });
   document.body.classList.add("is-reading");
   $("home").classList.add("is-hidden");
   $("reader").classList.remove("is-hidden");
@@ -152,7 +179,7 @@ function openSource(s, { push = true } = {}) {
   const tags = [];
   if (s.category === "geo" && s.perspective) {
     const o = SUB_FILTERS.geo.options.find((x) => x.id === s.perspective);
-    tags.push(`<span class="tag">${o.label}</span>`);
+    tags.push(`<button class="tag tag--rating" data-rating="${o.id}" aria-label="Saorsa rating: ${o.label}. How we rate">${o.label}</button>`);
   }
   (s.topics || []).forEach((t, i) => {
     const o = SUB_FILTERS[s.category]?.options.find((x) => x.id === t);
@@ -176,6 +203,7 @@ function openSource(s, { push = true } = {}) {
 
   addRecent(s);
   store.set("last", s.id);
+  maybeSwipeHint();
   if (push) history.pushState({ id: s.id }, "", `#/site/${encodeURIComponent(s.id)}`);
   renderList();
   scrollRowIntoView(s.id);
@@ -287,6 +315,7 @@ const alwaysTab = () => store.get("alwaysTab", []);
 
 function goHome({ push = true } = {}) {
   state.current = null;
+  hideAccount({ restore: false });
   document.body.classList.remove("is-reading");
   $("reader").classList.add("is-hidden");
   $("home").classList.remove("is-hidden");
@@ -626,10 +655,11 @@ function openMenu() {
   const p = prefs;
   openPanel(`${panelHead("Menu")}
   <div class="panel__body" id="menuBody" style="gap:18px">
-    <button class="m-link m-account" data-act="account"><span class="avatar">${ICON.user}</span><span class="m-txt">Sign in<small>Accounts are coming soon</small></span>${ICON.chev}</button>
+    ${accountRow()}
     ${supportCard()}
     <section class="m-section"><span class="m-label">About</span>
       <p class="m-about">One window onto independent media from every corner. Saorsa doesn’t rank or rewrite anything: you choose what to read.</p>
+      <button class="m-textlink" data-act="howrate">How we rate perspective →</button>
     </section>
     <section class="m-section"><span class="m-label">Preferences</span>
       <div class="pref"><div>Open sources in</div><div class="mini-seg" id="prefOpen" style="flex:none"><button data-v="saorsa" class="${p.openIn === "saorsa" ? "is-on" : ""}">Saorsa</button><button data-v="tab" class="${p.openIn === "tab" ? "is-on" : ""}">New tab</button></div></div>
@@ -647,7 +677,8 @@ function openMenu() {
   // listen on the menu's own elements (they are rebuilt each time), not on #panel
   const onClick = (e) => {
     const act = e.target.closest("[data-act]")?.dataset.act;
-    if (act === "account") toast("Accounts are coming soon.");
+    if (act === "account") { closePanel(); getSession() ? openAccount() : openSignIn(); }
+    if (act === "howrate") openHowWeRate(openMenu);
     if (act === "support") openSupport(openMenu);
     if (act === "suggest") openSuggest(openMenu);
     if (act === "contact") openContact(openMenu);
@@ -681,10 +712,12 @@ function renderRail() {
 
 /* ---------------- toast ---------------- */
 let toastTimer;
-function toast(msg) {
+function toast(msg, action = null) {
   const t = $("toast");
-  t.textContent = msg; t.classList.remove("is-hidden");
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.add("is-hidden"), 3800);
+  t.textContent = msg;
+  if (action) { const b = document.createElement("button"); b.textContent = action.label; b.onclick = () => { t.classList.add("is-hidden"); action.fn(); }; t.appendChild(b); }
+  t.classList.remove("is-hidden");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.add("is-hidden"), action ? 6000 : 3800);
 }
 
 /* ---------------- search ---------------- */
@@ -718,7 +751,10 @@ $("shuffleBtn").addEventListener("click", shuffle);
 $("searchBtn").addEventListener("click", () => setSearching(true));
 $("searchClose").addEventListener("click", () => setSearching(false));
 $("searchInput").addEventListener("input", (e) => { state.search = e.target.value; renderList(); });
-$("list").addEventListener("click", (e) => { const r = e.target.closest(".src-row"); if (r) pickSource(findById(r.dataset.id)); });
+$("list").addEventListener("click", (e) => {
+  if (state.tab === "saved" && handleSavedClick(e)) return;
+  const r = e.target.closest(".src-row"); if (r) pickSource(findById(r.dataset.id));
+});
 $("list").addEventListener("keydown", (e) => { if (e.key === "Enter") { const r = e.target.closest(".src-row"); if (r) pickSource(findById(r.dataset.id)); } });
 $("homeLink").addEventListener("click", (e) => { e.preventDefault(); goHome(); });
 $("collapseBtn").addEventListener("click", () => setCollapsed(true));
@@ -743,14 +779,7 @@ $("reloadBtn").addEventListener("click", () => {
   const s = state.current; if (!s || s.embeddable === false) return;
   startLoading(s); $("frame").src = "about:blank"; setTimeout(() => { $("frame").src = s.url; }, 0);
 });
-$("saveBtn").addEventListener("click", () => {
-  const s = state.current; if (!s) return;
-  state.saved = state.saved.includes(s.id) ? state.saved.filter((x) => x !== s.id) : [s.id, ...state.saved];
-  store.set("saved", state.saved);
-  $("saveBtn").classList.toggle("is-on", state.saved.includes(s.id));
-  toast(state.saved.includes(s.id) ? "Saved. Founders get Saved synced across devices." : "Removed from Saved.");
-  renderTabs(); if (state.tab === "saved") renderList();
-});
+$("saveBtn").addEventListener("click", () => { if (state.current) saveSite(state.current); });
 $("shareBtn").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(location.href); toast("Link copied."); } catch { toast(location.href); }
 });
@@ -778,6 +807,8 @@ document.addEventListener("keydown", (e) => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
   if (e.key === "Escape") {
     if (!$("panel").classList.contains("is-hidden")) return goBackPanel();
+    if (!$("sheetRoot").classList.contains("is-hidden")) return closeSheet();
+    if (!$("account").classList.contains("is-hidden")) return hideAccount();
     if (state.searching) return setSearching(false);
     if (state.current) return goHome();
   }
@@ -841,6 +872,164 @@ document.addEventListener("focusin", (e) => { const t = e.target.closest?.("[dat
 document.addEventListener("focusout", (e) => { if (e.target.closest?.("[data-label]")) hideLabel(); });
 document.addEventListener("pointerdown", hideLabel, true);
 
+/* ---------------- saving, account area ---------------- */
+// ☆ needs Supporter or Founder (NOW · 07). Signed-out / free → the plans.
+function saveSite(s, { quiet = false } = {}) {
+  if (!canSave()) return openPaywall({ site: s });
+  const target = toggleSaved(s);
+  if (!quiet) target ? afterSaveToast(s, target) : toast("Removed from Saved.");
+}
+function accountRow() {
+  const s = getSession();
+  if (!s) return `<button class="m-link m-account" data-act="account"><span class="avatar">${ICON.user}</span><span class="m-txt">Sign in<small>Free account · email code, no password</small></span>${ICON.chev}</button>`;
+  const badge = s.plan === "founder" ? `<small class="gold">★ Founder${s.founderNo ? ` #${String(s.founderNo).padStart(4, "0")}` : ""} · Account</small>`
+    : s.plan === "supporter" ? '<small class="gold">♥ Supporter · Account</small>' : "<small>Free · Account</small>";
+  return `<button class="m-link m-account" data-act="account"><span class="avatar avatar--txt">${esc(s.name[0].toUpperCase())}</span><span class="m-txt">${esc(s.name)}${badge}</span>${ICON.chev}</button>`;
+}
+function showAccount() {
+  closePanel();
+  stopLoading();
+  $("home").classList.add("is-hidden");
+  $("reader").classList.add("is-hidden");
+  $("account").classList.remove("is-hidden");
+  document.body.classList.add("is-account");
+  $("account").scrollTop = 0;
+}
+function hideAccount({ restore = true } = {}) {
+  if ($("account").classList.contains("is-hidden")) return;
+  closeAccount();
+  document.body.classList.remove("is-account");
+  if (!restore) return;
+  if (state.current) $("reader").classList.remove("is-hidden"); else $("home").classList.remove("is-hidden");
+}
+function showSavedTab() {
+  hideAccount();
+  setCollapsed(false);
+  if (state.searching) setSearching(false);
+  state.tab = "saved"; renderAll();
+  document.body.classList.remove("is-reading");
+}
+
+/* ---------------- perspective rating (NOW · 02) + How we rate ---------------- */
+const RATING = {
+  left: "Leans left: workers, public services, social justice.",
+  centre: "Broadly balanced, or mixes left and right views.",
+  right: "Leans right: markets, tradition, smaller state.",
+  hidden: "Focuses on hidden agendas, cover-ups and power behind the scenes.",
+};
+const ratingPop = $("ratingPop");
+let ratingTimer = 0;
+function showRating(tag) {
+  const id = tag.dataset.rating, o = SUB_FILTERS.geo.options.find((x) => x.id === id); if (!o) return;
+  ratingPop.innerHTML = `<b>Saorsa rating: ${esc(o.label)}</b><span>${id === "hidden" ? RATING.hidden : `Where this independent site sits, left to right. ${RATING[id]}`}</span><button class="m-textlink" id="howRateLink">How we rate →</button>`;
+  ratingPop.classList.remove("is-hidden");
+  const r = tag.getBoundingClientRect();
+  ratingPop.style.left = Math.max(8, Math.min(r.left, innerWidth - ratingPop.offsetWidth - 8)) + "px";
+  ratingPop.style.top = r.bottom + 8 + "px";
+  if (!calm()) ratingPop.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 160, easing: "ease-out" });
+  $("howRateLink").onclick = () => { hideRating(); openHowWeRate(null); };
+}
+function hideRating() { clearTimeout(ratingTimer); ratingPop.classList.add("is-hidden"); }
+$("rTags").addEventListener("pointerover", (e) => { const t = e.target.closest("[data-rating]"); if (!t) return; clearTimeout(ratingTimer); ratingTimer = setTimeout(() => showRating(t), 300); });
+$("rTags").addEventListener("pointerout", (e) => { if (e.target.closest("[data-rating]")) { clearTimeout(ratingTimer); ratingTimer = setTimeout(() => { if (!ratingPop.matches(":hover")) hideRating(); }, 200); } });
+$("rTags").addEventListener("click", (e) => { const t = e.target.closest("[data-rating]"); if (t) ratingPop.classList.contains("is-hidden") ? showRating(t) : hideRating(); });
+ratingPop.addEventListener("pointerleave", () => { ratingTimer = setTimeout(hideRating, 200); });
+ratingPop.addEventListener("pointerenter", () => clearTimeout(ratingTimer));
+
+function openHowWeRate(back = null) {
+  const per = SUB_FILTERS.geo.options.map((o) => `<li><b>${o.label}</b> ${RATING[o.id]}</li>`).join("");
+  openPanel(`${panelHead("How we rate", { back: !!back })}
+  <div class="panel__body prose">
+    <p>Every site on Saorsa is independent, and every Geo site gets a <b>perspective</b> so you can read across the spectrum on purpose.</p>
+    <hr class="divider-h">
+    <span class="m-label">The four perspectives</span>
+    <ul class="rate-list">${per}</ul>
+    <hr class="divider-h">
+    <span class="m-label">How we decide</span>
+    <ul class="rate-list">
+      <li>What the site says about itself, and who runs and funds it.</li>
+      <li>At least one outside view, such as Media Bias/Fact Check, AllSides or Wikipedia — a guide, not the verdict.</li>
+      <li>An editor reading a spread of recent articles before it goes live.</li>
+    </ul>
+    <hr class="divider-h">
+    <span class="m-label">What counts as independent</span>
+    <p>Not owned by a big media group, a listed media company or a government. Reader-funded sites, nonprofits, small publishers and individual writers all count — as long as they publish their own work and are still active.</p>
+    <hr class="divider-h">
+    <span class="m-label">A guide, not a judgement</span>
+    <p>A rating says where a site sits, not whether it is right. Topics on other categories (Health, Money and so on) work the same way.</p>
+    <button class="btn btn--ghost" id="rateReport">Think we got one wrong? Report it</button>
+  </div>`, back);
+  $("rateReport").addEventListener("click", () => openReport(state.current, "category", () => openHowWeRate(back)));
+}
+
+/* ---------------- roll-up filters (P7-17 / 18) ---------------- */
+function setRolled(on, { animate = true } = {}) {
+  document.body.classList.toggle("filters-rolled", on);
+  store.set("rolled", on);
+  if (!animate) document.body.classList.add("no-anim"), requestAnimationFrame(() => document.body.classList.remove("no-anim"));
+  updateCounts();
+}
+$("hideFilters").addEventListener("click", () => setRolled(true));
+$("crumb").addEventListener("click", () => setRolled(false));
+$("shuffleBtn2").addEventListener("click", shuffle);
+
+/* ---------------- mobile (NOW · 10 / 11 / 12) ---------------- */
+const isMobile = () => matchMedia("(max-width: 760px)").matches;
+$("mSearchBtn").addEventListener("click", () => setSearching(true));
+$("fabShuffle").addEventListener("click", shuffle);
+function openSheet() {
+  const f = SUB_FILTERS[state.category];
+  $("sheetTitle").textContent = `Filter ${catOf(state.category).label}`;
+  $("sheetSub").innerHTML = `<button class="pill ${state.sub.length ? "" : "is-on"}" data-sub="">All</button>` + f.options.map((o) => `<button class="pill ${state.sub.includes(o.id) ? "is-on" : ""}" data-sub="${o.id}">${o.label}</button>`).join("");
+  $("sheetCountry").value = state.country; $("sheetSort").value = state.sort;
+  sheetCount();
+  $("sheetRoot").classList.remove("is-hidden");
+  if (!calm()) { $("sheetRoot").querySelector(".sheet").animate([{ transform: "translateY(100%)" }, { transform: "none" }], { duration: 300, easing: "cubic-bezier(.22,.8,.24,1)" }); $("sheetRoot").animate([{ backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: "rgba(0,0,0,.55)" }], { duration: 300 }); }
+}
+function sheetCount() { $("sheetGo").textContent = `Show ${visible().length} sources`; }
+function closeSheet() {
+  const root = $("sheetRoot"); if (root.classList.contains("is-hidden")) return;
+  if (calm()) return root.classList.add("is-hidden");
+  root.querySelector(".sheet").animate([{ transform: "none" }, { transform: "translateY(100%)" }], { duration: 220, easing: "ease-in" }).onfinish = () => root.classList.add("is-hidden");
+}
+$("mFilterBtn").addEventListener("click", openSheet);
+$("sheetRoot").addEventListener("click", (e) => { if (e.target === $("sheetRoot")) closeSheet(); });
+$("sheetSub").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-sub]"); if (!b) return;
+  const id = b.dataset.sub, f = SUB_FILTERS[state.category];
+  if (!id) state.sub = []; else if (f.multi) state.sub = state.sub.includes(id) ? state.sub.filter((x) => x !== id) : [...state.sub, id]; else state.sub = state.sub[0] === id ? [] : [id];
+  $("sheetSub").querySelectorAll(".pill").forEach((p) => p.classList.toggle("is-on", p.dataset.sub ? state.sub.includes(p.dataset.sub) : !state.sub.length));
+  renderSub(); renderList(); sheetCount();
+});
+$("sheetCountry").addEventListener("change", (e) => { state.country = e.target.value; $("countrySel").value = state.country; renderList(); sheetCount(); });
+$("sheetSort").addEventListener("change", (e) => { state.sort = e.target.value; $("sortSel").value = state.sort; renderList(); });
+$("sheetReset").addEventListener("click", () => { state.sub = []; state.country = ""; state.sort = "az"; $("countrySel").value = ""; $("sortSel").value = "az"; renderSub(); renderList(); openSheet(); });
+$("sheetGo").addEventListener("click", closeSheet);
+
+document.querySelector(".mbar").addEventListener("click", (e) => {
+  const m = e.target.closest("[data-m]")?.dataset.m; if (!m) return;
+  if (m === "prev") step(-1);
+  if (m === "next") step(1);
+  if (m === "shuffle") shuffle();
+  if (m === "sources") goHome();
+  if (m === "saved") { goHome(); state.tab = "saved"; renderAll(); }
+});
+// Swipe left / right on the reader header for next / previous.
+(() => {
+  const bar = document.querySelector(".toolbar"); let x0 = null, y0 = 0;
+  bar.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  bar.addEventListener("touchend", (e) => {
+    if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+  }, { passive: true });
+})();
+function maybeSwipeHint() {
+  if (!isMobile() || store.get("swipeHinted", false)) return;
+  store.set("swipeHinted", true);
+  const h = $("swipeHint"); h.classList.remove("is-hidden");
+  setTimeout(() => h.classList.add("is-hidden"), 3500);
+}
+
 /* ---------------- splash ---------------- */
 function splash() {
   const el = $("splash");
@@ -853,10 +1042,18 @@ function splash() {
 }
 
 /* ---------------- start ---------------- */
+initAccount({
+  store, toast, findById: (id) => findById(id),
+  refresh: () => { renderTabs(); renderList(); renderRail(); if (state.current) $("saveBtn").classList.toggle("is-on", state.saved.includes(state.current.id)); },
+  saveSite, showAccount, hideAccount, showSavedTab, openMenu, openContact: (b) => openContact(b), openSuggest: (b) => openSuggest(b),
+});
 const bgApi = initBackground(settings);
 const tweak = initTweakPanel(settings, bgApi, refreshSources);
+$("t_plan").value = previewPlan();
+$("t_plan").addEventListener("change", (e) => { setPreviewPlan(e.target.value); toast(`Preview account: ${e.target.selectedOptions[0].textContent}${getSession() ? "" : " (sign in to use it)"}.`); });
 splash();
 if (store.get("collapsed", false)) setCollapsed(true);
+if (store.get("rolled", false)) setRolled(true, { animate: false });
 await refreshSources();
 routeFromHash(false);
 // "Remember last source": reopen it when Saorsa starts on the home page.

@@ -73,7 +73,11 @@ Once PocketBase is running, set `POCKETBASE_URL` in `js/config.js` and the site 
 | Rail (collapsed sidebar, 64px) | ✅ desktop |
 | Loading a site: progress bar, "Opening…" with dots, slow-site choices after 6 s (P7-22–24) | ✅ |
 | Hover labels on toolbar icons and the rail (P7-25 / 26) | ✅ desktop (not on touch screens) |
-| Sign in (email code), account area, Founder membership | ⏳ next |
+| Sign in with an email code (P7-L1–L3), account area (P7-05), Founder paywall on ☆ (NOW · 07) | ✅ PREVIEW mode until PocketBase runs: no email is sent, any 6 digits sign in, and the plan comes from the tweak panel (T → "Preview account as") |
+| Saved lists (NOW · 08): Supporters save, Founders make their own lists | ✅ kept in the browser until PocketBase sync |
+| Hide filters / breadcrumb (P7-17 / 18) | ✅ |
+| Perspective rating label + "How we rate" (NOW · 02) | ✅ |
+| Mobile: browse, filter sheet, reader bottom bar, swipe (NOW · 10–12) | ✅ |
 
 ## Before going live
 

@@ -108,7 +108,7 @@ migrate((app) => {
     name: "saved_lists",
     listRule: "user = @request.auth.id",
     viewRule: "user = @request.auth.id",
-    createRule: "@request.auth.id != '' && @request.auth.founder = true",
+    createRule: "@request.auth.id != '' && (@request.auth.founder = true || @request.auth.supporter = true)",
     updateRule: "user = @request.auth.id",
     deleteRule: "user = @request.auth.id",
     fields: [
@@ -119,9 +119,14 @@ migrate((app) => {
   });
   app.save(saved);
 
-  // Founder flag on accounts
+  // Plans on accounts, and sign-in with an emailed 6-digit code (P7-L1–L3).
+  // founder / supporter are set by the payment webhook, never by the reader.
   const users = app.findCollectionByNameOrId("users");
   users.fields.add(new BoolField({ name: "founder" }));
+  users.fields.add(new BoolField({ name: "supporter" }));
+  users.fields.add(new NumberField({ name: "founder_number", onlyInt: true }));
+  users.otp = { enabled: true, duration: 600, length: 6 };
+  users.passwordAuth = { enabled: false, identityFields: ["email"] };
   app.save(users);
 }, (app) => {
   for (const name of ["saved_lists", "contact_messages", "reports", "suggestions", "sources"]) {
