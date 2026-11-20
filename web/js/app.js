@@ -189,7 +189,7 @@ function addRecent(s) {
 // A click in the list: open inside Saorsa, or in a new tab if that's the reader's preference.
 function pickSource(s) {
   if (!s) return;
-  if (prefs.openIn === "tab") { window.open(s.url, "_blank", "noopener"); addRecent(s); if (state.tab === "recent") renderList(); return; }
+  if (prefs.openIn === "tab" || alwaysTab().includes(s.id)) { window.open(s.url, "_blank", "noopener"); addRecent(s); if (state.tab === "recent") renderList(); return; }
   openSource(s);
 }
 
@@ -213,6 +213,7 @@ function clearLoadingTimers() { loading.timers.forEach(clearTimeout); loading.ti
 function startLoading(s) {
   clearLoadingTimers();
   loading.site = s;
+  $("fallback").classList.add("is-hidden");
   $("ldTitle").textContent = `Opening ${s.domain}`;
   $("ldSub").classList.add("is-hidden");
   $("ldDots").classList.remove("is-hidden");
@@ -267,14 +268,22 @@ function stopLoading() {
   $("progress").classList.add("is-hidden");
 }
 
+// P7-27: the nightly check knows this site blocks frames → one clear way out.
+// P7-28: it should load but has been failing → try again, open, or report.
 function showFallback(s, kind) {
   stopLoading();
-  $("fbTitle").textContent = kind === "blocked" ? `${s.domain} can’t be shown inside Saorsa` : `${s.domain} didn’t load`;
-  $("fbText").textContent = kind === "blocked"
-    ? "Some publishers block being shown inside other sites. You can still read it in a new tab."
-    : "It may be down, moved to a new address, or no longer exist. Try again, open it directly, or let us know it’s broken.";
+  const blocked = kind === "blocked";
+  $("fbTitle").textContent = blocked ? `${s.domain} opens in its own tab` : `${s.domain} didn’t load`;
+  $("fbText").textContent = blocked
+    ? "This publisher doesn’t allow its pages to be shown inside other sites. Nothing’s wrong — it just needs a tab of its own."
+    : "It may be down for a moment, or it may have moved. You can try again or open it directly.";
+  $("fbRetry").classList.toggle("is-hidden", blocked);
+  $("fbReport").classList.toggle("is-hidden", blocked);
+  $("fbAlwaysRow").classList.toggle("is-hidden", !blocked);
+  $("fbAlways").checked = alwaysTab().includes(s.id);
   $("fallback").classList.remove("is-hidden");
 }
+const alwaysTab = () => store.get("alwaysTab", []);
 
 function goHome({ push = true } = {}) {
   state.current = null;
@@ -717,7 +726,17 @@ $("shareBtn").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(location.href); toast("Link copied."); } catch { toast(location.href); }
 });
 $("reportBtn").addEventListener("click", () => openReport());
-$("fbNext").addEventListener("click", () => step(1));
+$("fbAlways").addEventListener("change", (e) => {
+  const s = state.current; if (!s) return;
+  const list = alwaysTab().filter((id) => id !== s.id);
+  store.set("alwaysTab", e.target.checked ? [s.id, ...list] : list);
+  toast(e.target.checked ? `${s.domain} will open in a new tab from the list.` : `${s.domain} will open in Saorsa again.`);
+});
+$("fbRetry").addEventListener("click", () => {
+  const s = state.current; if (!s) return;
+  $("fallback").classList.add("is-hidden");
+  startLoading(s); $("frame").src = "about:blank"; setTimeout(() => { $("frame").src = s.url; }, 0);
+});
 $("frame").addEventListener("load", () => { if (loading.site && $("frame").getAttribute("src") !== "about:blank") finishLoading(); });
 $("ldWait").addEventListener("click", keepWaiting);
 $("ldReport").addEventListener("click", () => reportBroken(loading.site || state.current));

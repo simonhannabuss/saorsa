@@ -171,16 +171,17 @@
               <button class="link-danger is-hidden" id="ldReport">⚑ Report as broken</button>
             </div>
           </div>
-          <div class="fallback is-hidden" id="fallback">
-            <div class="card">
-              <div class="card__icon">!</div>
-              <h2 id="fbTitle">site.com can’t be shown inside Saorsa</h2>
-              <p id="fbText">Some publishers block being shown inside other sites. You can still read it in a new tab.</p>
+          <!-- Can't be shown / didn't load (P7-27 / 28): same calm style as loading -->
+          <div class="loading fallback is-hidden" id="fallback" role="status">
+            <div class="loading__box">
+              <p class="loading__title" id="fbTitle">site.com opens in its own tab</p>
+              <p class="loading__sub" id="fbText"></p>
               <div class="row row--center">
-                <a class="btn btn--accent" id="fbOpen" target="_blank" rel="noopener noreferrer">Open in new tab</a>
-                <button class="btn btn--ghost" id="fbNext">Next source →</button>
+                <button class="btn btn--ghost is-hidden" id="fbRetry">Try again</button>
+                <a class="btn btn--accent" id="fbOpen" target="_blank" rel="noopener noreferrer">Open in new tab <svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
               </div>
-              <button class="link-danger" id="fbReport">⚑ Report as broken</button>
+              <label class="always is-hidden" id="fbAlwaysRow"><input type="checkbox" id="fbAlways"> Always open this site in a new tab</label>
+              <button class="link-danger is-hidden" id="fbReport">⚑ Report as broken</button>
             </div>
           </div>
         </div>
