@@ -309,17 +309,51 @@ function scrollRowIntoView(id) {
 // A panel takes over the left column. `back` is where the ‹ button goes
 // (e.g. the menu); without one, ‹ and × both close the panel.
 let panelBack = null;
+let panelDir = null;        // "back" when the ‹ button (or Esc) is going back a step
+let panelAnim = null;
+const calm = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const EASE = "cubic-bezier(.22,.8,.24,1)";
+
+// Panels slide: the first one glides in over the column from the left, moving
+// deeper (Menu → Suggest) pushes the new page in from the right, going back
+// brings the previous page in from the left, and closing slides it away.
 function openPanel(html, back = null) {
   const p = $("panel");
+  const wasOpen = !p.classList.contains("is-hidden") && !p.dataset.closing;
+  const dir = panelDir || (wasOpen ? "forward" : "open");
+  panelDir = null;
+  panelAnim?.cancel(); delete p.dataset.closing;
   panelBack = back;
   p.innerHTML = html;
   p.classList.remove("is-hidden");
   if (document.body.classList.contains("is-collapsed")) setCollapsed(false);
-  p.querySelector("[data-back],[data-close]")?.focus();
+  p.querySelector("[data-back],[data-close]")?.focus({ preventScroll: true });
   p.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closePanel));
-  p.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => (panelBack ? panelBack() : closePanel())));
+  p.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", goBackPanel));
+  if (calm()) return;
+  if (dir === "open") {
+    panelAnim = p.animate([{ transform: "translateX(-100%)" }, { transform: "none" }], { duration: 320, easing: EASE });
+  } else {
+    const from = dir === "back" ? -28 : 28;
+    for (const el of p.children) el.animate([{ transform: `translateX(${from}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 260, easing: EASE });
+  }
 }
-function closePanel() { panelBack = null; $("panel").classList.add("is-hidden"); $("panel").innerHTML = ""; }
+function goBackPanel() {
+  if (!panelBack) return closePanel();
+  panelDir = "back";
+  panelBack();
+}
+function closePanel() {
+  const p = $("panel");
+  panelBack = null;
+  if (p.classList.contains("is-hidden")) return;
+  const done = () => { delete p.dataset.closing; p.classList.add("is-hidden"); p.innerHTML = ""; };
+  if (calm()) return done();
+  p.dataset.closing = "1";
+  panelAnim?.cancel();
+  panelAnim = p.animate([{ transform: "none" }, { transform: "translateX(-100%)" }], { duration: 260, easing: "cubic-bezier(.4,0,.8,.4)" });
+  panelAnim.onfinish = () => { if (p.dataset.closing) done(); };
+}
 
 const ICON = {
   back: '<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -695,7 +729,7 @@ window.addEventListener("resize", () => { if (!state.catsOpen) renderCats(); });
 document.addEventListener("keydown", (e) => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
   if (e.key === "Escape") {
-    if (!$("panel").classList.contains("is-hidden")) return panelBack ? panelBack() : closePanel();
+    if (!$("panel").classList.contains("is-hidden")) return goBackPanel();
     if (state.searching) return setSearching(false);
     if (state.current) return goHome();
   }
