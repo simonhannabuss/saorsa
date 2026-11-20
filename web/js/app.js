@@ -447,12 +447,16 @@ function openSuggest(back = openMenu) {
   openPanel(`${panelHead("Suggest a source", { back: !!back })}
   <form class="panel__body" id="suggestForm">
     <p>Know an independent site we’re missing? Paste the address and we’ll check it.</p>
+    <hr class="divider-h">
     <span class="field-label">Website address</span>
     <input class="text-input" name="url" type="url" placeholder="https://www.example-news.org" required>
+    <hr class="divider-h">
     <span class="field-label">Category</span>
     <div class="chips-pick" id="sCats">${CATEGORIES.map((c) => `<button type="button" class="pill" data-cat="${c.id}">${c.label}</button>`).join("")}</div>
+    <hr class="divider-h">
     <span class="field-label">Country</span>
     <label class="ctl ctl--select field-select"><select name="country">${COUNTRY_OPTIONS}</select></label>
+    <hr class="divider-h">
     <textarea name="note" rows="3" placeholder="Why should it be on Saorsa? (optional)"></textarea>
   </form>
   <footer class="panel__foot"><button class="btn btn--ghost" data-close>Cancel</button><button class="btn btn--accent" id="suggestSend">Send suggestion</button></footer>`, back);
@@ -473,13 +477,16 @@ function openContact(back = openMenu) {
   openPanel(`${panelHead("Contact Saorsa", { back: !!back })}
   <form class="panel__body" id="contactForm">
     <p>Questions, problems, press — we read everything.</p>
+    <hr class="divider-h">
     <span class="field-label">What’s it about?</span>
     <div class="chips-pick" id="cTopics">${topics.map((t, i) => `<button type="button" class="pill ${i === 0 ? "is-on" : ""}" data-t="${esc(t)}">${t}</button>`).join("")}</div>
     <p class="hint is-hidden" id="cSuggestHint">Suggesting a website? <button type="button" class="m-textlink" id="cToSuggest">Use Suggest a source</button> so it can be tracked.</p>
+    <hr class="divider-h">
     <span class="field-label">Name</span>
     <input class="text-input" name="name" placeholder="Your name" autocomplete="name">
     <span class="field-label">Email</span>
     <input class="text-input" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+    <hr class="divider-h">
     <span class="field-label">Message</span>
     <textarea name="message" rows="5" placeholder="How can we help?"></textarea>
     <p class="hint">We only use your email to reply.</p>
@@ -545,7 +552,7 @@ function openShortcuts(back = openMenu) {
 function openMenu() {
   const p = prefs;
   openPanel(`${panelHead("Menu")}
-  <div class="panel__body" id="menuBody" style="gap:22px">
+  <div class="panel__body" id="menuBody" style="gap:18px">
     <button class="m-link m-account" data-act="account"><span class="avatar">${ICON.user}</span><span class="m-txt">Sign in<small>Accounts and Founder membership are coming soon</small></span>${ICON.chev}</button>
     <section class="m-section"><span class="m-label">About</span>
       <p class="m-about">One window onto independent media from every corner. Saorsa doesn’t rank or rewrite anything: you choose what to read.</p>

@@ -195,7 +195,8 @@ textarea, .text-input { width: 100%; border: 1px solid var(--border-control); ba
 .field-select { flex: none !important; height: 40px; }
 
 /* menu (NOW · 05) */
-.m-section { display: flex; flex-direction: column; gap: 10px; }
+.m-section { display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.08); }
+.panel__body .divider-h { flex: none; margin: 2px 0; }
 .m-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--text-3); text-transform: uppercase; }
 .m-link { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 8px 10px; border: 0; border-radius: var(--radius); background: var(--surface-control); color: var(--text); text-align: left; width: 100%; }
 .m-link:hover { background: var(--surface-hover); }
