@@ -603,7 +603,7 @@ function setCollapsed(on) {
   store.set("collapsed", on);
 }
 function renderRail() {
-  $("railCats").innerHTML = CATEGORIES.map((c) => `<button class="rail__cat ${c.id === state.category && state.tab === "all" ? "is-on" : ""}" data-rail-cat="${c.id}" style="--c:${c.color}" data-label="${c.label}" data-dot="${c.color}" data-meta="${(() => { const n = state.sources.filter((s) => s.category === c.id).length; return `${n} site${n === 1 ? "" : "s"}`; })()}" aria-label="${c.label}"><span></span></button>`).join("");
+  $("railCats").innerHTML = CATEGORIES.map((c) => `<button class="rail__cat ${c.id === state.category && state.tab === "all" ? "is-on" : ""}" data-rail-cat="${c.id}" style="--c:${c.color}" data-label="${c.label}" data-meta="${(() => { const n = state.sources.filter((s) => s.category === c.id).length; return `${n} site${n === 1 ? "" : "s"}`; })()}" aria-label="${c.label}"><span></span></button>`).join("");
   document.querySelectorAll("#rail [data-rail]").forEach((b) => b.classList.toggle("is-on", (b.dataset.rail === "saved" || b.dataset.rail === "recent") && state.tab === b.dataset.rail));
 }
 
