@@ -116,6 +116,7 @@ body.is-collapsed .side { display: none; }
 /* categories: two rows, ▾ for the rest */
 .cats { display: flex; flex-wrap: wrap; gap: 6px; max-height: calc(var(--ctl-h) * 2 + 6px); overflow: hidden; }
 .cats.is-open { max-height: none; }
+.divider-h { border: 0; height: 1px; margin: 0; background: rgba(255,255,255,.08); }
 .chip { height: var(--ctl-h); display: inline-flex; align-items: center; gap: 6px; padding: 0 12px 0 10px; border-radius: 999px; border: 1px solid var(--border-control); background: transparent; font-weight: 600; font-size: 12px; color: var(--text); }
 .chip:hover { background: var(--surface-hover); }
 .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
