@@ -362,6 +362,10 @@ function openPanel(html, back = null) {
   panelDir = null;
   panelAnim?.cancel(); delete p.dataset.closing;
   panelBack = back;
+  // Keep a picture of the page we're leaving so the two can slide past each other.
+  document.querySelectorAll(".panel-ghost").forEach((g) => g.remove());
+  const ghost = wasOpen && !calm() && dir !== "open" ? p.cloneNode(true) : null;
+  if (ghost) { ghost.removeAttribute("id"); ghost.classList.add("panel-ghost"); ghost.setAttribute("aria-hidden", "true"); ghost.inert = true; ghost.querySelector(".panel__body")?.scrollTo?.(0, p.querySelector(".panel__body")?.scrollTop || 0); }
   p.innerHTML = html;
   p.classList.remove("is-hidden");
   if (document.body.classList.contains("is-collapsed")) setCollapsed(false);
@@ -371,9 +375,21 @@ function openPanel(html, back = null) {
   if (calm()) return;
   if (dir === "open") {
     panelAnim = p.animate([{ transform: "translateX(-100%)" }, { transform: "none" }], { duration: 320, easing: EASE });
-  } else {
-    const from = dir === "back" ? -28 : 28;
-    for (const el of p.children) el.animate([{ transform: `translateX(${from}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 260, easing: EASE });
+  } else if (ghost) {
+    // Forward: the new page slides in from the right over the old one, which
+    // drifts left and dims. Back: the old page slides off to the right and
+    // the previous one comes forward from underneath.
+    const T = { duration: 340, easing: EASE };
+    if (dir === "forward") {
+      p.before(ghost);
+      ghost.animate([{ transform: "none", filter: "brightness(1)" }, { transform: "translateX(-30%)", filter: "brightness(.55)" }], T).onfinish = () => ghost.remove();
+      panelAnim = p.animate([{ transform: "translateX(100%)", boxShadow: "-10px 0 24px rgba(0,0,0,.35)" }, { transform: "none", boxShadow: "-10px 0 24px rgba(0,0,0,0)" }], T);
+    } else {
+      p.after(ghost);
+      ghost.style.boxShadow = "-10px 0 24px rgba(0,0,0,.35)";
+      ghost.animate([{ transform: "none" }, { transform: "translateX(100%)" }], T).onfinish = () => ghost.remove();
+      panelAnim = p.animate([{ transform: "translateX(-30%)", filter: "brightness(.55)" }, { transform: "none", filter: "brightness(1)" }], T);
+    }
   }
 }
 function goBackPanel() {
@@ -894,9 +910,19 @@ function showAccount() {
   $("account").classList.remove("is-hidden");
   document.body.classList.add("is-account");
   $("account").scrollTop = 0;
+  if (!calm()) {
+    $("account").animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: "ease-out" });
+    $("account").querySelector(".acc-body")?.animate([{ transform: "translateY(14px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 360, easing: EASE });
+  }
 }
 function hideAccount({ restore = true } = {}) {
   if ($("account").classList.contains("is-hidden")) return;
+  if (restore && !calm()) {
+    // fade the account away over whatever it was covering
+    const ghost = $("account").cloneNode(true); ghost.removeAttribute("id"); ghost.inert = true;
+    $("account").after(ghost);
+    ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: "ease-in" }).onfinish = () => ghost.remove();
+  }
   closeAccount();
   document.body.classList.remove("is-account");
   if (!restore) return;
