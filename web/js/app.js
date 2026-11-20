@@ -170,6 +170,7 @@ function openSource(s, { push = true } = {}) {
     showFallback(s, "down");
   } else {
     $("fallback").classList.add("is-hidden");
+    startLoading(s);
     frame.src = s.url;
   }
 
@@ -198,7 +199,76 @@ function visibleFor(s) {
   return v.some((x) => x.id === s.id) ? v : state.sources.filter((x) => x.category === s.category).sort(byName);
 }
 
+/* ---------------- loading a site (P7-22 / 23 / 24) ---------------- */
+// Something is always moving after a click: a thin bar under the toolbar and
+// "Opening site.com" with three waving dots. After ~1 s a reassurance line,
+// after ~6 s the choice to keep waiting or open the site in a new tab.
+const loading = { site: null, timers: [] };
+function setBar(pct, ms, ease = "ease-out") {
+  const bar = $("progress").firstElementChild;
+  bar.style.transition = ms ? `width ${ms}ms ${ease}` : "none";
+  bar.style.width = pct + "%";
+}
+function clearLoadingTimers() { loading.timers.forEach(clearTimeout); loading.timers = []; }
+function startLoading(s) {
+  clearLoadingTimers();
+  loading.site = s;
+  $("ldTitle").textContent = `Opening ${s.domain}`;
+  $("ldSub").classList.add("is-hidden");
+  $("ldDots").classList.remove("is-hidden");
+  $("ldActions").classList.add("is-hidden");
+  $("ldReport").classList.add("is-hidden");
+  $("ldOpen").href = s.url;
+  $("loading").classList.remove("is-hidden");
+  const p = $("progress");
+  p.classList.remove("is-hidden", "is-done");
+  setBar(0, 0);
+  requestAnimationFrame(() => requestAnimationFrame(() => setBar(30, 300)));
+  loading.timers.push(setTimeout(() => setBar(70, 900), 320));
+  loading.timers.push(setTimeout(() => {
+    setBar(90, 9000, "cubic-bezier(.1,.6,.3,1)");
+    $("ldSub").textContent = "Some independent sites are a little slow";
+    $("ldSub").classList.remove("is-hidden");
+  }, 1000));
+  loading.timers.push(setTimeout(slowLoading, 6000));
+}
+function slowLoading() {
+  const s = loading.site; if (!s) return;
+  $("ldTitle").textContent = `${s.domain} is taking a while`;
+  $("ldSub").textContent = "It may be busy. You can keep waiting or try another way.";
+  $("ldSub").classList.remove("is-hidden");
+  $("ldDots").classList.add("is-hidden");
+  $("ldActions").classList.remove("is-hidden");
+  $("ldReport").classList.remove("is-hidden");
+}
+function keepWaiting() {
+  const s = loading.site; if (!s) return;
+  clearLoadingTimers();
+  $("ldTitle").textContent = `Still opening ${s.domain}`;
+  $("ldSub").textContent = "We’ll show it as soon as it arrives.";
+  $("ldDots").classList.remove("is-hidden");
+  $("ldActions").classList.add("is-hidden");
+  $("ldReport").classList.add("is-hidden");
+  loading.timers.push(setTimeout(slowLoading, 10000));
+}
+function finishLoading() {
+  if (!loading.site) return;
+  clearLoadingTimers();
+  loading.site = null;
+  setBar(100, 200);
+  $("loading").classList.add("is-hidden");
+  loading.timers.push(setTimeout(() => $("progress").classList.add("is-done"), 220));
+  loading.timers.push(setTimeout(() => { $("progress").classList.add("is-hidden"); setBar(0, 0); }, 450));
+}
+function stopLoading() {
+  clearLoadingTimers();
+  loading.site = null;
+  $("loading").classList.add("is-hidden");
+  $("progress").classList.add("is-hidden");
+}
+
 function showFallback(s, kind) {
+  stopLoading();
   $("fbTitle").textContent = kind === "blocked" ? `${s.domain} can’t be shown inside Saorsa` : `${s.domain} didn’t load`;
   $("fbText").textContent = kind === "blocked"
     ? "Some publishers block being shown inside other sites. You can still read it in a new tab."
@@ -211,6 +281,7 @@ function goHome({ push = true } = {}) {
   document.body.classList.remove("is-reading");
   $("reader").classList.add("is-hidden");
   $("home").classList.remove("is-hidden");
+  stopLoading();
   $("frame").src = "about:blank";
   if (push) history.pushState({}, "", location.pathname + location.search);
   renderList();
@@ -525,7 +596,7 @@ function setCollapsed(on) {
   store.set("collapsed", on);
 }
 function renderRail() {
-  $("railCats").innerHTML = CATEGORIES.map((c) => `<button class="rail__cat ${c.id === state.category && state.tab === "all" ? "is-on" : ""}" data-rail-cat="${c.id}" style="--c:${c.color}" title="${c.label} · ${state.sources.filter((s) => s.category === c.id).length} sources" aria-label="${c.label}"><span></span></button>`).join("");
+  $("railCats").innerHTML = CATEGORIES.map((c) => `<button class="rail__cat ${c.id === state.category && state.tab === "all" ? "is-on" : ""}" data-rail-cat="${c.id}" style="--c:${c.color}" data-label="${c.label}" data-dot="${c.color}" data-meta="${(() => { const n = state.sources.filter((s) => s.category === c.id).length; return `${n} site${n === 1 ? "" : "s"}`; })()}" aria-label="${c.label}"><span></span></button>`).join("");
   document.querySelectorAll("#rail [data-rail]").forEach((b) => b.classList.toggle("is-on", (b.dataset.rail === "saved" || b.dataset.rail === "recent") && state.tab === b.dataset.rail));
 }
 
@@ -589,7 +660,10 @@ $("supportLink").addEventListener("click", (e) => { e.preventDefault(); openSupp
 $("backBtn").addEventListener("click", () => goHome());
 $("prevBtn").addEventListener("click", () => step(-1));
 $("nextBtn").addEventListener("click", () => step(1));
-$("reloadBtn").addEventListener("click", () => { if (state.current) $("frame").src = state.current.url; });
+$("reloadBtn").addEventListener("click", () => {
+  const s = state.current; if (!s || s.embeddable === false) return;
+  startLoading(s); $("frame").src = "about:blank"; setTimeout(() => { $("frame").src = s.url; }, 0);
+});
 $("saveBtn").addEventListener("click", () => {
   const s = state.current; if (!s) return;
   state.saved = state.saved.includes(s.id) ? state.saved.filter((x) => x !== s.id) : [s.id, ...state.saved];
@@ -603,6 +677,9 @@ $("shareBtn").addEventListener("click", async () => {
 });
 $("reportBtn").addEventListener("click", () => openReport());
 $("fbNext").addEventListener("click", () => step(1));
+$("frame").addEventListener("load", () => { if (loading.site && $("frame").getAttribute("src") !== "about:blank") finishLoading(); });
+$("ldWait").addEventListener("click", keepWaiting);
+$("ldReport").addEventListener("click", () => reportBroken(loading.site || state.current));
 $("fbReport").addEventListener("click", () => reportBroken());
 
 window.addEventListener("popstate", () => routeFromHash(false));
@@ -631,6 +708,49 @@ function routeFromHash(push) {
   if (s) { state.category = s.category; renderAll(); openSource(s, { push }); }
   else if (state.current) goHome({ push: false });
 }
+
+/* ---------------- hover labels (r7/Hover label) ---------------- */
+// Anything with data-label gets a label that fades up after a 350 ms rest.
+// Toolbar items: label under the item. Rail items: label to the right.
+// Once a label is showing, the next one appears straight away.
+const hover = { el: $("hoverLabel"), target: null, timer: 0, warmUntil: 0 };
+function showLabel(t) {
+  const el = hover.el, d = t.dataset;
+  el.innerHTML = (d.dot ? `<span class="hl-dot" style="--c:${d.dot}"></span>` : "") + esc(d.label)
+    + (d.meta ? ` <small>${esc(d.meta)}</small>` : "") + (d.key ? ` <kbd>${esc(d.key)}</kbd>` : "");
+  el.classList.remove("is-on", "from-left");
+  el.style.left = "-999px"; el.style.top = "0px"; el.style.visibility = "hidden";
+  const r = t.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight;
+  const side = !!t.closest(".rail");
+  let x, y;
+  if (side) { x = r.right + 10; y = r.top + (r.height - h) / 2; }
+  else { x = r.left + r.width / 2 - w / 2; y = r.bottom + 8; }
+  x = Math.max(8, Math.min(x, innerWidth - w - 8));
+  el.style.left = x + "px"; el.style.top = y + "px"; el.style.visibility = "";
+  void el.offsetWidth;
+  el.classList.add("is-on"); if (side) el.classList.add("from-left");
+}
+function hideLabel() {
+  clearTimeout(hover.timer);
+  if (hover.el.classList.contains("is-on")) hover.warmUntil = Date.now() + 300;
+  hover.el.classList.remove("is-on", "from-left");
+  hover.target = null;
+}
+function queueLabel(t) {
+  if (hover.target === t) return;
+  clearTimeout(hover.timer);
+  hover.target = t;
+  const warm = hover.el.classList.contains("is-on") || Date.now() < hover.warmUntil;
+  hover.el.classList.remove("is-on");
+  hover.timer = setTimeout(() => showLabel(t), warm ? 0 : 350);
+}
+if (matchMedia("(hover: hover)").matches) {
+  document.addEventListener("pointerover", (e) => { const t = e.target.closest("[data-label]"); if (t) queueLabel(t); });
+  document.addEventListener("pointerout", (e) => { const t = e.target.closest("[data-label]"); if (t && !t.contains(e.relatedTarget)) hideLabel(); });
+}
+document.addEventListener("focusin", (e) => { const t = e.target.closest?.("[data-label]"); if (t && t.matches(":focus-visible")) { hover.target = t; showLabel(t); } });
+document.addEventListener("focusout", (e) => { if (e.target.closest?.("[data-label]")) hideLabel(); });
+document.addEventListener("pointerdown", hideLabel, true);
 
 /* ---------------- splash ---------------- */
 function splash() {

@@ -71,6 +71,8 @@ Once PocketBase is running, set `POCKETBASE_URL` in `js/config.js` and the site 
 | Splash (first visit per session) | ✅ |
 | Mobile list ↔ reader | ✅ basic |
 | Rail (collapsed sidebar, 64px) | ✅ desktop |
+| Loading a site: progress bar, "Opening…" with dots, slow-site choices after 6 s (P7-22–24) | ✅ |
+| Hover labels on toolbar icons and the rail (P7-25 / 26) | ✅ desktop (not on touch screens) |
 | Sign in (email code), account area, Founder membership | ⏳ next |
 
 ## Before going live

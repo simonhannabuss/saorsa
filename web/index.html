@@ -29,18 +29,18 @@
   <div class="app" id="app">
     <!-- COLLAPSED RAIL (desktop): shown when the left column is closed -->
     <nav class="rail" id="rail" aria-label="Saorsa (collapsed)">
-      <button class="rail__btn" data-rail="menu" title="Menu" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      <button class="rail__mono" data-rail="home" title="Saorsa home" aria-label="Saorsa home">S</button>
+      <button class="rail__btn" data-rail="menu" data-label="Menu" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="rail__mono" data-rail="home" data-label="Saorsa home" aria-label="Saorsa home">S</button>
       <span class="rail__div"></span>
-      <button class="rail__btn" data-rail="search" title="Search ( / )" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></button>
-      <button class="rail__btn" data-rail="recent" title="Recent" aria-label="Recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button>
-      <button class="rail__btn" data-rail="saved" title="Saved" aria-label="Saved"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg></button>
+      <button class="rail__btn" data-rail="search" data-label="Search" data-key="/" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></button>
+      <button class="rail__btn" data-rail="recent" data-label="Recent" aria-label="Recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button>
+      <button class="rail__btn" data-rail="saved" data-label="Saved" aria-label="Saved"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg></button>
       <span class="rail__div"></span>
       <div class="rail__cats" id="railCats"></div>
       <span class="rail__grow"></span>
-      <button class="rail__btn rail__btn--accent" data-rail="shuffle" title="Shuffle ( S )" aria-label="Shuffle"><svg viewBox="0 0 24 24"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.6-1 3.4-2.3M13.6 9.3C14.4 8 15.4 7 17 7h3M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></svg></button>
-      <button class="rail__btn rail__btn--heart" data-rail="support" title="Support Saorsa" aria-label="Support Saorsa"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
-      <button class="rail__btn" data-rail="expand" title="Open sidebar" aria-label="Open sidebar"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15"/></svg></button>
+      <button class="rail__btn rail__btn--accent" data-rail="shuffle" data-label="Shuffle" data-key="S" aria-label="Shuffle"><svg viewBox="0 0 24 24"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.6-1 3.4-2.3M13.6 9.3C14.4 8 15.4 7 17 7h3M17.5 4.5 20 7l-2.5 2.5M17.5 14.5 20 17l-2.5 2.5"/></svg></button>
+      <button class="rail__btn rail__btn--heart" data-rail="support" data-label="Support Saorsa" aria-label="Support Saorsa"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
+      <button class="rail__btn" data-rail="expand" data-label="Open sidebar" aria-label="Open sidebar"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15"/></svg></button>
     </nav>
 
     <!-- LEFT COLUMN -->
@@ -136,6 +136,7 @@
       <!-- Reader -->
       <section class="reader is-hidden" id="reader">
         <div class="toolbar">
+          <div class="progress is-hidden" id="progress" aria-hidden="true"><span></span></div>
           <button class="icon-btn only-mobile" id="backBtn" aria-label="Back to the list"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
           <button class="icon-btn" id="prevBtn" aria-label="Previous source (←)" title="Previous ( ← )"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
           <button class="icon-btn" id="nextBtn" aria-label="Next source (→)" title="Next ( → )"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -147,16 +148,29 @@
           </div>
           <div class="tags" id="rTags"></div>
           <span class="grow"></span>
-          <button class="icon-btn" id="reloadBtn" aria-label="Reload" title="Reload"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2-4.9M19 4v4h-4"/></svg></button>
-          <button class="icon-btn" id="saveBtn" aria-label="Save" title="Save to your list"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg></button>
-          <button class="icon-btn" id="shareBtn" aria-label="Copy link" title="Copy link"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button>
-          <button class="icon-btn" id="reportBtn" aria-label="Report a problem (R)" title="Report a problem ( R )"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 5c3-2 6 2 9 0s4-1 5-.5v8.5c-1-.5-2-.5-5 .5s-6-2.5-9-.5"/></svg></button>
+          <button class="icon-btn" id="reloadBtn" aria-label="Reload page" data-label="Reload page"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2-4.9M19 4v4h-4"/></svg></button>
+          <button class="icon-btn" id="saveBtn" aria-label="Save to your list" data-label="Save to your list"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg></button>
+          <button class="icon-btn" id="shareBtn" aria-label="Copy link" data-label="Copy link"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button>
+          <button class="icon-btn" id="reportBtn" aria-label="Report a problem (R)" data-label="Report a problem" data-key="R"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 5c3-2 6 2 9 0s4-1 5-.5v8.5c-1-.5-2-.5-5 .5s-6-2.5-9-.5"/></svg></button>
           <a class="btn btn--ghost" id="openBtn" target="_blank" rel="noopener noreferrer">Open original
             <svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
         </div>
         <div class="frame-wrap">
           <iframe id="frame" title="Source" referrerpolicy="no-referrer"
             sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox"></iframe>
+          <!-- Loading (P7-22 / 23 / 24) -->
+          <div class="loading is-hidden" id="loading" role="status" aria-live="polite">
+            <div class="loading__box">
+              <p class="loading__title" id="ldTitle">Opening site</p>
+              <p class="loading__sub is-hidden" id="ldSub"></p>
+              <span class="dots" id="ldDots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <div class="row row--center is-hidden" id="ldActions">
+                <button class="btn btn--ghost" id="ldWait">Keep waiting</button>
+                <a class="btn btn--accent" id="ldOpen" target="_blank" rel="noopener noreferrer">Open in new tab</a>
+              </div>
+              <button class="link-danger is-hidden" id="ldReport">⚑ Report as broken</button>
+            </div>
+          </div>
           <div class="fallback is-hidden" id="fallback">
             <div class="card">
               <div class="card__icon">!</div>
@@ -182,6 +196,7 @@
   </div>
 
   <div class="toast is-hidden" id="toast" role="status"></div>
+  <div class="hover-label" id="hoverLabel" aria-hidden="true"></div>
 
   <!-- Dev tweak panel: press T (or add ?tweak to the address) -->
   <div class="tweak is-hidden" id="tweak">
