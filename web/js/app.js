@@ -70,20 +70,23 @@ function renderTabs() {
   });
 }
 
-function renderCats() {
+function renderCats(swapIn = false) {
   const el = $("cats");
-  // A selected category that would be hidden behind ▾ swaps into view.
+  // Categories keep a fixed order. Only on narrow screens, where some chips
+  // hide behind ▾, does a selected hidden chip swap into the last visible spot.
   const order = [...CATEGORIES];
-  const selIdx = order.findIndex((c) => c.id === state.category);
-  if (!state.catsOpen && selIdx > 5) { const [sel] = order.splice(selIdx, 1); order.splice(5, 0, sel); }
+  if (swapIn && !state.catsOpen) {
+    const selIdx = order.findIndex((c) => c.id === state.category);
+    const [sel] = order.splice(selIdx, 1); order.splice(swapIn - 1, 0, sel);
+  }
   el.innerHTML = order.map((c) => `<button class="chip ${c.id === state.category ? "is-on" : ""}" data-cat="${c.id}" style="--c:${c.color}"><span class="dot"></span>${c.label}</button>`).join("")
     + `<button class="chip chip--more" id="catsMore" aria-label="${state.catsOpen ? "Show fewer categories" : "Show all categories"}"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>`;
   el.classList.toggle("is-open", state.catsOpen);
   // Put ▾ straight after the last chip that fits in two rows.
-  if (!state.catsOpen) requestAnimationFrame(placeMore);
+  if (!state.catsOpen) requestAnimationFrame(() => placeMore(swapIn));
 }
 
-function placeMore() {
+function placeMore(swapped) {
   const el = $("cats"); const more = $("catsMore"); if (!more) return;
   const chips = [...el.querySelectorAll(".chip:not(.chip--more)")];
   const limit = el.getBoundingClientRect().top + el.clientHeight;
@@ -91,6 +94,9 @@ function placeMore() {
   for (const c of chips) { if (c.getBoundingClientRect().bottom <= limit + 1) lastFit = c; }
   const hidden = chips.filter((c) => c.getBoundingClientRect().bottom > limit + 1);
   if (!hidden.length) { more.classList.add("is-hidden"); return; }
+  if (!swapped && hidden.some((c) => c.dataset.cat === state.category)) {
+    return renderCats(chips.length - hidden.length || 1);
+  }
   more.classList.remove("is-hidden");
   // move ▾ before the first hidden chip; if it then doesn't fit, move it one earlier
   el.insertBefore(more, hidden[0]);
