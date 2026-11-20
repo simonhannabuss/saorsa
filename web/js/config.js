@@ -10,26 +10,25 @@ export const CATEGORIES = [
   { id: "history", label: "History", color: "var(--cat-history)" },
 ];
 
-// Geo uses Perspective (multi-select). History uses Mainstream / Alternative.
-// The others use topics; a site can have up to two (the first is its main one).
-// `edge: true` marks the option that gets the red dot.
+// Geo uses Perspective (multi-select). The others use topics; a site can have
+// up to two (the first is its main one). No colour dots on sub-categories.
 export const SUB_FILTERS = {
   geo: {
     kind: "perspective",
     multi: true,
     options: [
-      { id: "hidden", label: "Hidden", color: "var(--p-hidden)", edge: true },
-      { id: "left", label: "Left", color: "var(--p-left)" },
-      { id: "centre", label: "Centre", color: "var(--p-centre)" },
-      { id: "right", label: "Right", color: "var(--p-right)" },
+      { id: "left", label: "Left" },
+      { id: "centre", label: "Centre" },
+      { id: "right", label: "Right" },
+      { id: "hidden", label: "Hidden" },
     ],
   },
-  spiritual: { kind: "topic", options: [{ id: "occult", label: "Occult", edge: true }, { id: "faith", label: "Faith" }, { id: "eastern", label: "Eastern" }, { id: "new-age", label: "New Age" }] },
-  health: { kind: "topic", options: [{ id: "sceptic", label: "Sceptic", edge: true }, { id: "natural", label: "Natural" }, { id: "mind", label: "Mind" }, { id: "evidence", label: "Evidence" }] },
-  money: { kind: "topic", options: [{ id: "power", label: "Power", edge: true }, { id: "markets", label: "Markets" }, { id: "economy", label: "Economy" }, { id: "crypto", label: "Crypto" }] },
-  exo: { kind: "topic", options: [{ id: "ancient", label: "Ancient", edge: true }, { id: "disclosure", label: "Disclosure" }, { id: "sightings", label: "Sightings" }] },
-  science: { kind: "topic", options: [{ id: "fringe", label: "Fringe", edge: true }, { id: "space", label: "Space" }, { id: "nature", label: "Nature" }, { id: "tech", label: "Tech" }] },
-  history: { kind: "topic", options: [{ id: "mainstream", label: "Mainstream" }, { id: "alternative", label: "Alternative", edge: true }] },
+  spiritual: { kind: "topic", options: [{ id: "faith", label: "Faith" }, { id: "eastern", label: "Eastern" }, { id: "new-age", label: "New Age" }, { id: "occult", label: "Occult" }] },
+  health: { kind: "topic", options: [{ id: "sceptic", label: "Sceptic" }, { id: "natural", label: "Natural" }, { id: "mind", label: "Mind" }, { id: "evidence", label: "Evidence" }] },
+  money: { kind: "topic", options: [{ id: "power", label: "Power" }, { id: "markets", label: "Markets" }, { id: "economy", label: "Economy" }, { id: "crypto", label: "Crypto" }] },
+  exo: { kind: "topic", options: [{ id: "disclosure", label: "Disclosure" }, { id: "paranormal", label: "Paranormal" }] },
+  science: { kind: "topic", options: [{ id: "space", label: "Space" }, { id: "nature", label: "Nature" }, { id: "tech", label: "Tech" }, { id: "hidden", label: "Hidden" }] },
+  history: { kind: "topic", options: [{ id: "mainstream", label: "Mainstream" }, { id: "hidden", label: "Hidden" }] },
 };
 
 // Opposite sides for the "Other side" button on Geo sites.

@@ -106,7 +106,7 @@ function placeMore(swapped) {
 function renderSub() {
   const f = SUB_FILTERS[state.category];
   const el = $("subFilter");
-  const pill = (o) => `<button class="pill ${state.sub.includes(o.id) ? "is-on" : ""}" data-sub="${o.id}" style="--c:${o.color || "var(--edge)"}">${o.edge || f.kind === "perspective" ? '<span class="dot"></span>' : ""}${o.label}</button>`;
+  const pill = (o) => `<button class="pill ${state.sub.includes(o.id) ? "is-on" : ""}" data-sub="${o.id}">${o.label}</button>`;
   el.innerHTML = `<button class="pill ${state.sub.length ? "" : "is-on"}" data-sub="">All</button>` + f.options.map(pill).join("");
 }
 
@@ -152,7 +152,7 @@ function openSource(s, { push = true } = {}) {
   const tags = [];
   if (s.category === "geo" && s.perspective) {
     const o = SUB_FILTERS.geo.options.find((x) => x.id === s.perspective);
-    tags.push(`<span class="tag" style="--c:${o.color}"><span class="dot"></span>${o.label}</span>`);
+    tags.push(`<span class="tag">${o.label}</span>`);
   }
   (s.topics || []).forEach((t, i) => {
     const o = SUB_FILTERS[s.category]?.options.find((x) => x.id === t);
