@@ -591,17 +591,45 @@ function openShortcuts(back = openMenu) {
     ${[["/", "Search"], ["S", "Shuffle"], ["← →", "Previous / next site"], ["R", "Report a problem"], ["?", "Keyboard shortcuts"], ["Esc", "Close / back"], ["T", "Background tweaks"]].map(([k, l]) => `<div class="row"><kbd class="choice" style="width:64px;justify-content:center">${k}</kbd><span>${l}</span></div>`).join("")}</div>`, back);
 }
 
+/* ---- Support card at the top of the menu (P7-29, version A) ---- */
+const supportCard = () => `<section class="sup" aria-label="Support Saorsa">
+  <div class="sup__head"><span class="sup__heart">${ICON.heart}</span><div><strong>Keep Saorsa independent</strong><small>No ads. No paywall. Funded by readers.</small></div></div>
+  <button class="tier tier--gold" data-link="founder"><span class="tier__ic">${ICON.star}</span><span class="tier__txt"><b>Founder <em>Best value</em></b><small>Saved favourites for life + badge</small></span><span class="tier__price"><b>£29</b><small>once</small></span></button>
+  <button class="tier" data-link="monthly"><span class="tier__ic tier__ic--red">${ICON.heart}</span><span class="tier__txt"><b>Supporter</b><small>Keeps Saorsa running</small></span><span class="tier__price"><b>£3</b><small>a month</small></span></button>
+  <div class="sup__or"><span></span>or give once<span></span></div>
+  <div class="sup__amts">${[3, 5, 10, 25].map((a) => `<button data-amt="${a}" class="${a === 10 ? "is-on" : ""}">£${a}</button>`).join("")}<button data-amt="other">Other</button></div>
+  <div class="sup__pay"><button class="btn btn--accent" data-link="donate" data-donate>Donate £10</button><button class="btn btn--paypal" data-link="paypal">PayPal</button></div>
+  <button class="m-textlink" data-act="support">More ways to give →</button>
+</section>`;
+
+function wireSupportCard(root) {
+  let amount = 10;
+  const card = root.querySelector(".sup"); if (!card) return;
+  card.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-amt]");
+    if (a) {
+      amount = a.dataset.amt === "other" ? "other" : Number(a.dataset.amt);
+      card.querySelectorAll("[data-amt]").forEach((x) => x.classList.toggle("is-on", x === a));
+      card.querySelector("[data-donate]").textContent = amount === "other" ? "Donate" : `Donate £${amount}`;
+      return;
+    }
+    const b = e.target.closest("[data-link]"); if (!b) return;
+    let url = SUPPORT_LINKS[b.dataset.link];
+    if (!url) return toast("That option isn’t set up yet — coming soon.");
+    if (b.dataset.link === "donate" && amount !== "other") url += (url.includes("?") ? "&" : "?") + `amount=${amount}`;
+    window.open(url, "_blank", "noopener");
+  });
+}
+
 /* ---- Menu (NOW · 05) ---- */
 function openMenu() {
   const p = prefs;
   openPanel(`${panelHead("Menu")}
   <div class="panel__body" id="menuBody" style="gap:18px">
-    <button class="m-link m-account" data-act="account"><span class="avatar">${ICON.user}</span><span class="m-txt">Sign in<small>Accounts and Founder membership are coming soon</small></span>${ICON.chev}</button>
+    <button class="m-link m-account" data-act="account"><span class="avatar">${ICON.user}</span><span class="m-txt">Sign in<small>Accounts are coming soon</small></span>${ICON.chev}</button>
+    ${supportCard()}
     <section class="m-section"><span class="m-label">About</span>
       <p class="m-about">One window onto independent media from every corner. Saorsa doesn’t rank or rewrite anything: you choose what to read.</p>
-    </section>
-    <section class="m-section"><span class="m-label">Support Saorsa</span>
-      <button class="m-link m-link--heart" data-act="support">${ICON.heart}<span class="m-txt">Support Saorsa<small>Founder, donations & other ways</small></span>${ICON.chev}</button>
     </section>
     <section class="m-section"><span class="m-label">Preferences</span>
       <div class="pref"><div>Open sources in</div><div class="mini-seg" id="prefOpen" style="flex:none"><button data-v="saorsa" class="${p.openIn === "saorsa" ? "is-on" : ""}">Saorsa</button><button data-v="tab" class="${p.openIn === "tab" ? "is-on" : ""}">New tab</button></div></div>
@@ -631,6 +659,7 @@ function openMenu() {
     if (o) { prefs.openIn = o.dataset.v; $("prefOpen").querySelectorAll("button").forEach((b) => b.classList.toggle("is-on", b === o)); savePrefs(); }
   };
   $("menuBody").addEventListener("click", onClick);
+  wireSupportCard($("menuBody"));
   $("panel").querySelector(".m-foot").addEventListener("click", onClick);
 }
 

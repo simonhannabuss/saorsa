@@ -234,6 +234,40 @@ textarea, .text-input { width: 100%; border: 1px solid var(--border-control); ba
 .m-foot button { background: none; border: 0; color: inherit; display: flex; align-items: center; gap: 8px; padding: 0; }
 .m-foot kbd { font: 10px var(--font-ui); border: 1px solid var(--border-control); border-radius: 4px; padding: 1px 6px; }
 
+/* support card in the menu (P7-29 A) */
+.sup { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.09);
+  background: linear-gradient(135deg, rgba(80,191,227,.14), rgba(242,206,92,.07)); }
+.sup__head { display: flex; align-items: center; gap: 10px; }
+.sup__head strong { display: block; font-size: 14px; }
+.sup__head small { display: block; color: var(--text-2); font-size: 11px; white-space: nowrap; }
+.sup__heart { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(239,111,108,.16); color: var(--danger); flex: none; }
+.sup__heart svg, .tier__ic svg { width: 16px; height: 16px; fill: currentColor; stroke: none; }
+.tier { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 10px; text-align: left; color: var(--text);
+  background: rgba(31,31,33,.9); border: 1px solid rgba(255,255,255,.08); }
+.tier:hover { border-color: rgba(255,255,255,.2); }
+.tier--gold { background: rgba(242,206,92,.1); border-color: rgba(242,206,92,.55); }
+.tier--gold:hover { border-color: rgba(242,206,92,.85); }
+.tier__ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(242,206,92,.18); color: var(--cat-money); flex: none; }
+.tier__ic--red { background: rgba(239,111,108,.18); color: var(--danger); }
+.tier__ic svg { width: 14px; height: 14px; }
+.tier__txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tier__txt b { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.tier__txt em { font-style: normal; font-size: 10px; font-weight: 700; color: var(--cat-money); background: rgba(242,206,92,.2); border-radius: 4px; padding: 1px 6px; }
+.tier__txt small { font-size: 10.5px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tier__price { display: flex; flex-direction: column; align-items: flex-end; }
+.tier__price b { font-size: 14px; }
+.tier__price small { font-size: 10px; color: var(--text-3); }
+.sup__or { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--text-3); }
+.sup__or span { flex: 1; height: 1px; background: rgba(255,255,255,.08); }
+.sup__amts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.sup__amts button { height: 32px; border-radius: 8px; background: #1f1f21; border: 1px solid rgba(255,255,255,.08); color: var(--text); font-size: 12px; font-weight: 600; }
+.sup__amts button.is-on { background: rgba(80,191,227,.16); border-color: rgba(80,191,227,.7); color: var(--accent); }
+.sup__pay { display: flex; gap: 8px; }
+.sup__pay .btn { height: 36px; justify-content: center; font-weight: 700; }
+.sup__pay .btn--accent { flex: 1; }
+.sup__pay .btn--paypal { background: #2d70b4; color: #fff; padding: 0 16px; }
+.sup .m-textlink { font-weight: 600; }
+
 /* support (NOW · 06) */
 .founder { display: flex; align-items: center; gap: 12px; padding: 14px; border: 0; border-radius: 14px; background: rgba(242,206,92,.08); color: var(--text); text-align: left; width: 100%; }
 .founder .badge-star { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(242,206,92,.18); color: var(--cat-money); flex: none; }
