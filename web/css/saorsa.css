@@ -72,15 +72,15 @@ svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width:
 .side ::-webkit-scrollbar, .panel ::-webkit-scrollbar, .rail::-webkit-scrollbar { width: 10px; height: 10px; }
 .side ::-webkit-scrollbar-track, .panel ::-webkit-scrollbar-track { background: transparent; }
 .side ::-webkit-scrollbar-thumb, .panel ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,.08) padding-box; border: 3px solid transparent; border-radius: 10px; min-height: 40px; }
-.side :hover::-webkit-scrollbar-thumb, .panel :hover::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,.2); }
-.side ::-webkit-scrollbar-thumb:hover, .panel ::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,.34); }
+  background: #555 padding-box; border: 3px solid transparent; border-radius: 10px; min-height: 40px; }
+.side :hover::-webkit-scrollbar-thumb, .panel :hover::-webkit-scrollbar-thumb { background-color: #666; }
+.side ::-webkit-scrollbar-thumb:hover, .panel ::-webkit-scrollbar-thumb:hover { background-color: #888; }
 .side ::-webkit-scrollbar-thumb:active, .panel ::-webkit-scrollbar-thumb:active { background-color: rgba(80,191,227,.6); }
 .side ::-webkit-scrollbar-corner, .panel ::-webkit-scrollbar-corner { background: transparent; }
 .rail::-webkit-scrollbar { display: none; }
 @supports (-moz-appearance: none) {
-  .side *, .panel * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
-  .side *:hover, .panel *:hover { scrollbar-color: rgba(255,255,255,.3) transparent; }
+  .side *, .panel * { scrollbar-width: thin; scrollbar-color: #555 transparent; }
+  .side *:hover, .panel *:hover { scrollbar-color: #777 transparent; }
 }
 
 /* ---------- Background ---------- */
