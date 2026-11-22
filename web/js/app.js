@@ -84,14 +84,24 @@ function renderCats(swapIn = false) {
     const [sel] = order.splice(selIdx, 1); order.splice(swapIn - 1, 0, sel);
   }
   el.innerHTML = order.map((c) => `<button class="chip ${c.id === state.category ? "is-on" : ""}" data-cat="${c.id}" style="--c:${c.color}"><span class="dot"></span>${c.label}</button>`).join("")
-    + `<button class="chip chip--more" id="catsMore" aria-label="${state.catsOpen ? "Show fewer categories" : "Show all categories"}"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>`;
+    + `<button class="chip chip--more ${state.catsOpen ? "" : "is-hidden"}" id="catsMore" aria-label="${state.catsOpen ? "Show fewer categories" : "Show all categories"}"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>`;
   el.classList.toggle("is-open", state.catsOpen);
   // Put ▾ straight after the last chip that fits in two rows.
   if (!state.catsOpen) requestAnimationFrame(() => placeMore(swapIn));
 }
 
+// Shows ▾ only when the chips really don't fit on two lines. It measures
+// only while the categories are on screen at full size (not rolled up, not
+// on the Saved / Recent tabs, not mid-collapse, fonts loaded), otherwise it
+// keeps ▾ hidden and measures again once they are visible.
+function catsMeasurable(el) {
+  return el.offsetParent !== null && el.clientHeight > 0 && !document.body.classList.contains("filters-rolled")
+    && !document.body.classList.contains("is-collapsed") && el.getBoundingClientRect().width >= 200;
+}
 function placeMore(swapped) {
   const el = $("cats"); const more = $("catsMore"); if (!more) return;
+  more.classList.add("is-hidden");
+  if (!catsMeasurable(el)) return;
   const chips = [...el.querySelectorAll(".chip:not(.chip--more)")];
   const limit = el.getBoundingClientRect().top + el.clientHeight;
   let lastFit = null;
@@ -818,6 +828,10 @@ $("fbReport").addEventListener("click", () => reportBroken());
 
 window.addEventListener("popstate", () => routeFromHash(false));
 window.addEventListener("resize", () => { if (!state.catsOpen) renderCats(); });
+document.fonts?.ready.then(() => { if (!state.catsOpen) renderCats(); });
+// re-check once the filters finish unrolling or the column finishes opening
+$("filters").addEventListener("transitionend", (e) => { if (e.propertyName === "grid-template-rows" && !state.catsOpen) renderCats(); });
+document.body.addEventListener("transitionend", (e) => { if (e.target === document.body && !state.catsOpen) renderCats(); });
 
 document.addEventListener("keydown", (e) => {
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
