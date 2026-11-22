@@ -33,9 +33,9 @@
   --p-hidden: #ef6f6c;
 
   /* background (tweakable) */
-  --overlay: 0.45;
-  --glow: 0.22;
-  --grain: 0.08;
+  --overlay: 0.37;
+  --glow: 0.4;
+  --grain: 0.26;
 
   /* layout */
   --side-w: 330px;

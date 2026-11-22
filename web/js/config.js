@@ -36,7 +36,7 @@ export const SUB_FILTERS = {
 export const OTHER_SIDE = { left: ["right", "centre"], right: ["left", "centre"], centre: ["left", "right"], hidden: ["centre"] };
 
 // Background defaults. The tweak panel (press T) overrides them in this browser only.
-export const BG_DEFAULTS = { overlay: 0.45, glow: 0.22, parallax: 12, grain: 0.08, speed: 0.6 };
+export const BG_DEFAULTS = { overlay: 0.37, glow: 0.4, parallax: 12, grain: 0.26, speed: 0.6 };
 
 // If a PocketBase server is reachable at this address, sources come from its
 // `sources` collection and reports / suggestions are saved there.
