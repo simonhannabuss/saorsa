@@ -665,3 +665,4 @@ body.tab-other #browseControls > .divider-h, body.tab-other .filters, body.tab-o
   .bg__glow { display: none; }
 }
 @media (max-width: 760px) { .m-foot { display: none; } }
+.tweak select { width: 100%; height: 30px; margin-top: 6px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--border-control); background: var(--surface-control); color: var(--text); font: inherit; font-size: 12px; }
