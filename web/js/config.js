@@ -50,7 +50,7 @@ export const POCKETBASE_URL = "https://api.saorsa.space";
 // - sign-in stays in PREVIEW mode (no emails, plan from the tweak panel)
 //   until this is true and PocketBase can send email.
 export const SOURCES_FROM_SERVER = false;
-export const ACCOUNTS_LIVE = false;
+export const ACCOUNTS_LIVE = true;
 
 // Show review-queue candidates (pending) alongside live sites?
 // On by default only on localhost and dev.* hosts. Never on in production.

@@ -2,7 +2,7 @@
 import { CATEGORIES, SUB_FILTERS, SUPPORT_LINKS } from "./config.js";
 import { loadSources, sendReport, sendSuggestion, sendContact } from "./data.js";
 import { loadSettings, initBackground, initTweakPanel } from "./background.js";
-import { getSession, plan, canSave, previewPlan, setPreviewPlan, PREVIEW } from "./auth.js";
+import { getSession, plan, canSave, previewPlan, setPreviewPlan, PREVIEW, refreshSession } from "./auth.js";
 import { initAccount, openSignIn, openPaywall, openAccount, closeAccount, savedIds, toggleSaved, afterSaveToast, savedListHTML, handleSavedClick, modalOpen } from "./account.js";
 
 const $ = (id) => document.getElementById(id);
@@ -1092,7 +1092,9 @@ initAccount({
 const bgApi = initBackground(settings);
 const tweak = initTweakPanel(settings, bgApi, refreshSources);
 $("t_plan").value = previewPlan();
-$("t_plan").addEventListener("change", (e) => { setPreviewPlan(e.target.value); toast(`Preview account: ${e.target.selectedOptions[0].textContent}${getSession() ? "" : " (sign in to use it)"}.`); });
+if (!PREVIEW) $("t_plan").closest("label").remove(); // real accounts: plans come from the server
+refreshSession();
+$("t_plan")?.addEventListener("change", (e) => { setPreviewPlan(e.target.value); toast(`Preview account: ${e.target.selectedOptions[0].textContent}${getSession() ? "" : " (sign in to use it)"}.`); });
 splash();
 if (store.get("collapsed", false)) setCollapsed(true);
 if (store.get("rolled", false)) setRolled(true, { animate: false });

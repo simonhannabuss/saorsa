@@ -1,7 +1,7 @@
 // Sign-in (P7-L1–L3), Founder paywall (NOW · 07), account area (P7-05)
 // and saved lists (NOW · 08). app.js passes in the helpers it owns (ctx).
 import { SUPPORT_LINKS } from "./config.js";
-import { PREVIEW, getSession, plan, canSave, canMakeLists, requestCode, verifyCode, signOut } from "./auth.js";
+import { PREVIEW, getSession, plan, canSave, canMakeLists, requestCode, verifyCode, signOut, deleteAccount } from "./auth.js";
 
 let ctx;
 const $ = (id) => document.getElementById(id);
@@ -387,7 +387,8 @@ function renderAccount() {
     if (a === "download") downloadData();
     if (a === "close") ctx.hideAccount();
     if (a === "signout") { signOut(); ctx.hideAccount(); ctx.toast("Signed out."); }
-    if (a === "delete" && confirm("Delete your account? Your saved lists and settings on this device will be removed. This can’t be undone.")) {
+    if (a === "delete" && confirm("Delete your account? Your account, saved lists and settings will be removed. This can’t be undone.")) {
+      deleteAccount().catch(() => ctx.toast("Couldn’t reach the server — please try again, or contact us."));
       ["lists", "lastList", "saved", "suggestions", "reports", "contact_messages"].forEach((k) => localStorage.removeItem("saorsa." + k));
       signOut(); ctx.hideAccount(); ctx.toast("Account deleted.");
     }

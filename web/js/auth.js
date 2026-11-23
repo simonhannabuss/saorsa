@@ -75,3 +75,26 @@ export async function verifyCode({ otpId, email }, code) {
 }
 
 export function signOut() { setSession(null); }
+
+// On each visit, check the account with the server: picks up a new plan
+// (e.g. after paying, or when you mark yourself Founder in the admin) and
+// signs out if the sign-in has expired.
+export async function refreshSession() {
+  const s = getSession();
+  if (PREVIEW || !s?.token) return;
+  try {
+    const { token, record } = await pb("/api/collections/users/auth-refresh", {}, s.token);
+    setSession({ ...s, token, name: record.name || s.name, email: record.email,
+      plan: record.founder ? "founder" : record.supporter ? "supporter" : "free", founderNo: record.founder_number || null });
+  } catch (err) {
+    if (err.status === 401 || err.status === 403 || err.status === 404) setSession(null);
+  }
+}
+
+/** Removes the account on the server (live) — the browser data is cleared by the caller. */
+export async function deleteAccount() {
+  const s = getSession();
+  if (PREVIEW || !s?.token || !s.id) return;
+  const res = await fetch(`${POCKETBASE_URL}/api/collections/users/records/${s.id}`, { method: "DELETE", headers: { Authorization: s.token } });
+  if (!res.ok && res.status !== 404) throw new Error(`Could not delete (${res.status})`);
+}
