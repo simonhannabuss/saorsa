@@ -4,10 +4,10 @@
 // (users collection, OTP turned on). Without a server it runs in PREVIEW mode:
 // no email is sent, any 6 digits sign you in, and the plan comes from the
 // tweak panel (press T → "Preview account as"). Nothing leaves the browser.
-import { POCKETBASE_URL } from "./config.js";
+import { POCKETBASE_URL, ACCOUNTS_LIVE } from "./config.js";
 
 const KEY = "saorsa.session";
-export const PREVIEW = !POCKETBASE_URL;
+export const PREVIEW = !POCKETBASE_URL || !ACCOUNTS_LIVE;
 
 export function getSession() {
   try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch { return null; }

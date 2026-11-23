@@ -564,7 +564,8 @@ function openSuggest(back = openMenu) {
   $("suggestSend").addEventListener("click", async () => {
     const f = $("suggestForm");
     if (!f.url.value || !f.url.checkValidity()) { f.url.focus(); return toast("Add the site’s full address, starting with https://"); }
-    await sendSuggestion({ url: f.url.value.trim(), category: cat, country: f.country.value || null, note: f.note.value.trim() || null }).catch(() => {});
+    try { await sendSuggestion({ url: f.url.value.trim(), category: cat, country: f.country.value || null, note: f.note.value.trim() || null }); }
+    catch { return toast("Couldn’t send that just now. Please try again in a moment."); }
     openPanel(`${panelHead("Suggestion sent")}<div class="panel__body sent"><div class="tick">✓</div><h2>Thanks — it’s in the queue</h2><p>We check every suggestion before it goes on Saorsa.</p><div class="row row--center"><button class="btn btn--accent" data-close>Done</button></div></div>`);
   });
 }
@@ -602,7 +603,8 @@ function openContact(back = openMenu) {
     const f = $("contactForm");
     if (!f.email.value || !f.email.checkValidity()) { f.email.focus(); return toast("Add your email so we can reply."); }
     if (!f.message.value.trim()) { f.message.focus(); return toast("Write a message first."); }
-    await sendContact({ topic, name: f.name.value.trim() || null, email: f.email.value.trim(), message: f.message.value.trim(), site: state.current?.domain || null }).catch(() => {});
+    try { await sendContact({ topic, name: f.name.value.trim() || null, email: f.email.value.trim(), message: f.message.value.trim(), site: state.current?.domain || null }); }
+    catch { return toast("Couldn’t send your message just now. Please try again in a moment."); }
     openPanel(`${panelHead("Message sent")}<div class="panel__body sent"><div class="tick">✓</div><h2>Thanks — we’ll reply soon</h2><p>We usually answer within a few days.</p><div class="row row--center"><button class="btn btn--accent" data-close>Done</button></div></div>`);
   });
 }

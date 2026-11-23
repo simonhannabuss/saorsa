@@ -41,7 +41,16 @@ export const BG_DEFAULTS = { overlay: 0.37, glow: 0.4, parallax: 12, grain: 0.26
 // If a PocketBase server is reachable at this address, sources come from its
 // `sources` collection and reports / suggestions are saved there.
 // Leave empty to use the JSON files in /data (as now).
-export const POCKETBASE_URL = "";
+export const POCKETBASE_URL = "https://api.saorsa.space";
+
+// Step by step onto the server:
+// - forms (reports, suggestions, contact) go to PocketBase as soon as
+//   POCKETBASE_URL is set;
+// - the site list keeps coming from data/sources.json until this is true;
+// - sign-in stays in PREVIEW mode (no emails, plan from the tweak panel)
+//   until this is true and PocketBase can send email.
+export const SOURCES_FROM_SERVER = false;
+export const ACCOUNTS_LIVE = false;
 
 // Show review-queue candidates (pending) alongside live sites?
 // On by default only on localhost and dev.* hosts. Never on in production.
