@@ -29,7 +29,7 @@ const founderBadge = (s) => s?.plan === "founder" ? `<span class="badge-founder"
 export function initAccount(c) {
   ctx = c;
   migrateSaved();
-  window.addEventListener("saorsa:session", () => { ctx.refresh(); if (!$("account").classList.contains("is-hidden")) renderAccount(); });
+  window.addEventListener("saorsa:session", () => ctx.refresh());
 }
 
 /* ================= modal shell ================= */
@@ -305,103 +305,9 @@ function pickList(s) {
   });
 }
 
-/* ================= account area (P7-05) ================= */
-export function openAccount() {
-  if (!getSession()) return openSignIn();
-  ctx.showAccount();
-  renderAccount();
+/* ================= account area: now full-window, see area.js ================= */
+export function openAccount(page = "overview") {
+  if (!getSession() && page === "overview") return openSignIn();
+  ctx.openArea(page);
 }
-export function closeAccount() { $("account").classList.add("is-hidden"); }
-
-function renderAccount() {
-  const s = getSession(); if (!s) { ctx.hideAccount(); return; }
-  const l = lists(); const ids = savedIds();
-  const sugg = ctx.store.getRaw("suggestions");
-  const fmt = (d) => d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
-  const memb = {
-    founder: { t: "Founder · lifetime", sub: `Joined ${fmt(s.joined)}`, b: ["Saved favourites + your own lists", "Unlimited suggestions, reviewed first", "Name on the About page (optional)"] },
-    supporter: { t: "Supporter · £3 a month", sub: `Since ${fmt(s.joined)} · cancel anytime`, b: ["Saved favourites, synced across devices", "Supporter badge"] },
-    free: { t: "Free", sub: "Saorsa stays free to read, always", b: ["Every source & category", "Search & Shuffle", "Recent history on this device"] },
-  }[s.plan] || { t: "Free", sub: "", b: [] };
-  const savedRows = l.flatMap((x) => x.items.map((id) => [ctx.findById(id), x.name])).filter(([src]) => src).slice(0, 4);
-  $("account").innerHTML = `
-    <nav class="acc-nav">
-      <span class="m-label">Account</span>
-      <button class="is-on" data-acc="overview">${I.home}Overview</button>
-      <button data-acc="saved">${I.star}Saved</button>
-      <button data-acc="suggestions">${I.plus}Suggestions${sugg.length ? `<span class="count">${sugg.length}</span>` : ""}</button>
-      <button data-acc="membership">${I.card}Membership</button>
-      <button data-acc="preferences">${I.sliders}Preferences</button>
-      <button data-acc="contact">${I.mail}Contact</button>
-      <span class="grow"></span>
-      <button data-acc="signout">${I.out}Sign out</button>
-    </nav>
-    <div class="acc-body">
-      <button class="icon-btn acc-close" data-acc="close" aria-label="Close account">${I.x}</button>
-      <header class="acc-head">
-        <span class="m-avatar m-avatar--lg">${initial(s)}</span>
-        <div><h1>${esc(s.name)}</h1><small>${esc(s.email)} · signed in with email code${s.preview ? " (preview)" : ""}</small></div>
-        <span class="grow"></span>${founderBadge(s)}
-      </header>
-      <div class="acc-cards">
-        <section class="acc-card" id="accMembership">
-          <div class="acc-card__head"><h2>Membership</h2>${s.plan === "free" ? '<button class="m-textlink" data-acc="upgrade">See options</button>' : '<button class="m-textlink" data-acc="receipts">Receipts</button>'}</div>
-          <p class="acc-big">${memb.t}</p><small class="acc-muted">${memb.sub}</small>
-          <ul class="acc-ticks">${memb.b.map((b) => `<li>${I.check}${b}</li>`).join("")}</ul>
-        </section>
-        <section class="acc-card" id="accSaved">
-          <div class="acc-card__head"><h2>Saved · ${ids.length} source${ids.length === 1 ? "" : "s"}${canMakeLists() ? `, ${l.length} list${l.length === 1 ? "" : "s"}` : ""}</h2><button class="m-textlink" data-acc="saved">View all</button></div>
-          ${!canSave() ? '<p class="acc-muted">Saved favourites come with Supporter and Founder.</p>'
-            : savedRows.length ? savedRows.map(([src, ln]) => `<div class="acc-row"><span class="ini">${esc(src.domain[0].toUpperCase())}</span><span class="grow">${esc(src.domain)}</span><small>${esc(ln)}</small></div>`).join("")
-            : '<p class="acc-muted">Nothing saved yet. Tap ☆ on any site.</p>'}
-          ${canMakeLists() ? `<button class="m-textlink acc-new" data-acc="newlist">${I.plus} New list</button>` : ""}
-        </section>
-        <section class="acc-card acc-card--wide" id="accSuggestions">
-          <div class="acc-card__head"><h2>Your suggestions</h2><button class="m-textlink" data-acc="suggest">Suggest a source</button></div>
-          ${sugg.length ? sugg.slice().reverse().slice(0, 5).map((x) => `<div class="acc-row acc-row--sugg"><div class="grow"><b>${esc(String(x.url || "").replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))}</b><small>Sent ${fmt(x.created)}${s.plan === "founder" ? " · reviewed first (Founder)" : ""}</small></div><span class="status status--review">IN REVIEW</span></div>`).join("")
-            : '<p class="acc-muted">You haven’t suggested a site yet. Know an independent site we’re missing?</p>'}
-        </section>
-      </div>
-      <section class="acc-settings">
-        <div><small>Email</small><span>${esc(s.email)} · <button class="m-textlink" data-acc="email">Change</button></span></div>
-        <div><small>Sign-in</small><span>Email code</span></div>
-        <div><small>Your data</small><span><button class="m-textlink" data-acc="download">Download a copy</button></span></div>
-        <span class="grow"></span>
-        <button class="m-textlink danger" data-acc="delete">Delete account</button>
-      </section>
-    </div>`;
-  $("account").onclick = (e) => {
-    const a = e.target.closest("[data-acc]")?.dataset.acc; if (!a) return;
-    const jump = (id) => $(id)?.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "start" });
-    if (a === "overview") jump("account");
-    if (a === "saved") ctx.showSavedTab();
-    if (a === "suggestions") jump("accSuggestions");
-    if (a === "membership") jump("accMembership");
-    if (a === "preferences") ctx.openMenu();
-    if (a === "contact") ctx.openContact(null);
-    if (a === "suggest") ctx.openSuggest(null);
-    if (a === "upgrade") openPaywall();
-    if (a === "receipts") ctx.toast("Receipts arrive with payments.");
-    if (a === "newlist") { const n = prompt("Name the new list", "Morning read"); if (n !== null) { newList(n); renderAccount(); } }
-    if (a === "email") ctx.toast("Changing your email arrives with the Saorsa server.");
-    if (a === "download") downloadData();
-    if (a === "close") ctx.hideAccount();
-    if (a === "signout") { signOut(); ctx.hideAccount(); ctx.toast("Signed out."); }
-    if (a === "delete" && confirm("Delete your account? Your account, saved lists and settings will be removed. This can’t be undone.")) {
-      deleteAccount().catch(() => ctx.toast("Couldn’t reach the server — please try again, or contact us."));
-      ["lists", "lastList", "saved", "suggestions", "reports", "contact_messages"].forEach((k) => localStorage.removeItem("saorsa." + k));
-      signOut(); ctx.hideAccount(); ctx.toast("Account deleted.");
-    }
-    if (["overview", "suggestions", "membership"].includes(a)) $("account").querySelectorAll(".acc-nav button").forEach((b) => b.classList.toggle("is-on", b.dataset.acc === a));
-  };
-}
-
-function downloadData() {
-  const s = getSession();
-  const data = { exported: new Date().toISOString(), account: { email: s?.email, name: s?.name, plan: s?.plan }, lists: lists(),
-    recent: ctx.store.get("recent", []), preferences: ctx.store.get("prefs", {}), suggestions: ctx.store.getRaw("suggestions"), reports: ctx.store.getRaw("reports") };
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
-  a.download = "saorsa-my-data.json"; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-}
+export function closeAccount() { ctx.closeArea(); }
